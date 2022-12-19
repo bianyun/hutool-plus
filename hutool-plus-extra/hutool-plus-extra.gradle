@@ -1,0 +1,11 @@
+description = "Hutool Plus Extra Tools"
+
+dependencies {
+    api(project(":hutool-plus-core"))
+    api("cn.hutool:hutool-cache")
+    api("cn.hutool:hutool-json")
+    api("com.fasterxml.jackson.core:jackson-databind")
+
+    implementation("org.slf4j:slf4j-api")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
+}

@@ -1,0 +1,6 @@
+description = "Hutool Plus Core"
+
+dependencies {
+    api(project(":hutool-plus-core"))
+    api("org.springframework:spring-webmvc")
+}

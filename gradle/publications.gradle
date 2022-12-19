@@ -1,0 +1,81 @@
+//file:noinspection GroovyImplicitNullArgumentCall
+apply plugin: 'maven-publish'
+apply plugin: 'signing'
+
+publishing {
+	publications {
+		mavenJava(MavenPublication) {
+			versionMapping {
+				usage('java-api') {
+					fromResolutionResult()
+				}
+				usage('java-runtime') {
+					fromResolutionResult()
+				}
+			}
+			pom {
+				afterEvaluate {
+					name = project.name
+					description = project.description
+				}
+				url = 'https://github.com/bianyun1981/hutool-plus'
+				licenses {
+					license {
+						name = 'The Apache License, Version 2.0'
+						url = 'https://www.apache.org/licenses/LICENSE-2.0.txt'
+						distribution = "repo"
+					}
+				}
+				scm {
+					url = 'https://github.com/bianyun1981/hutool-plus'
+					connection = 'scm:git:git//github.com/bianyun1981/hutool-plus.git'
+					developerConnection = 'scm:git:ssh//github.com/bianyun1981/hutool-plus.git'
+				}
+				developers {
+					developer {
+						id = 'bianyun'
+						name = 'bianyun'
+						email = 'bianyun1981@gmail.com'
+					}
+				}
+				issueManagement {
+					system = "GitHub"
+					url = "https://github.com/bianyun/hutool-plus/issues"
+				}
+			}
+
+		}
+	}
+
+	repositories {
+		maven {
+			name = "localNexus"
+			def releasesRepoUrl = "http://127.0.0.1:8081/repository/maven-releases/"
+			def snapshotsRepoUrl = "http://127.0.0.1:8081/repository/maven-snapshots/"
+			url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+
+			allowInsecureProtocol = true
+			credentials {
+				username = project.properties["localNexusUsername"]
+				password = project.properties["localNexusPassword"]
+			}
+		}
+
+		maven {
+			name = "mavenCentral"
+			def releasesRepoUrl = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
+			def snapshotsRepoUrl = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
+			url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+
+			allowInsecureProtocol = false
+			credentials {
+				username = project.properties["ossrhUsername"]
+				password = project.properties["ossrhPassword"]
+			}
+		}
+	}
+}
+
+signing {
+	sign publishing.publications.mavenJava
+}

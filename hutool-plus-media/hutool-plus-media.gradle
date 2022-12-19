@@ -1,0 +1,20 @@
+description = "Hutool Plus Media Tools"
+
+dependencies {
+    api(project(":hutool-plus-core"))
+    api("com.documents4j:documents4j-api")
+    api("org.apache.poi:poi")
+
+    implementation("cn.hutool:hutool-poi")
+    implementation("org.apache.pdfbox:pdfbox")
+    implementation("com.documents4j:documents4j-local")
+    runtimeOnly("com.documents4j:documents4j-transformer-msoffice-word")
+    implementation("org.apache.tika:tika-core")
+    runtimeOnly("org.apache.tika:tika-parser-pdf-module")
+    runtimeOnly("org.apache.tika:tika-parser-text-module")
+    runtimeOnly("org.apache.tika:tika-parser-microsoft-module")
+    runtimeOnly("org.apache.tika:tika-parser-miscoffice-module")
+    implementation("org.imgscalr:imgscalr-lib")
+    implementation("ch.qos.logback:logback-classic")
+
+}

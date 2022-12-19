@@ -1,0 +1,137 @@
+import org.springframework.boot.gradle.plugin.SpringBootPlugin
+
+plugins {
+    id "java-library"
+    id 'org.springframework.boot' version '2.7.6' apply false
+    id 'net.researchgate.release' version '3.0.2'
+}
+
+ext {
+    moduleProjects = subprojects.findAll { it.name.startsWith("hutool-plus-") }
+    withoutJclOverSlf4j = {
+        exclude group: "org.slf4j", name: "jcl-over-slf4j"
+    }
+}
+
+configure([rootProject] + moduleProjects) { project ->
+    group = "plus.hutool"
+}
+
+configure(subprojects) { project ->
+    apply plugin: "io.spring.dependency-management"
+
+    ext {
+        springVersion = '5.3.24'
+        hutoolVersion = '5.8.10'
+        log4j2Version = '2.19.0'
+        jsr305Version = '3.0.2'
+        indriyaVersion = '2.1.3'
+        tikaVersion = '2.6.0'
+        poiVersion = '5.2.3'
+        pdfboxVersion = '2.0.27'
+        documents4jVersion = '1.1.10'
+        imgscalrVersion = '4.2'
+    }
+
+    dependencyManagement {
+        imports {
+            mavenBom SpringBootPlugin.BOM_COORDINATES
+            mavenBom "cn.hutool:hutool-bom:${hutoolVersion}"
+        }
+
+        dependencies {
+            dependency("org.springframework:spring-core:${springVersion}") {
+                exclude group: "org.springframework", name: "spring-jcl"
+            }
+
+            dependency("com.google.code.findbugs:jsr305:${jsr305Version}")
+            dependency("tech.units:indriya:${indriyaVersion}")
+            dependency("org.apache.pdfbox:pdfbox:${pdfboxVersion}")
+            dependency("org.imgscalr:imgscalr-lib:${imgscalrVersion}")
+
+            dependency("org.apache.logging.log4j:log4j-api:${log4j2Version}")
+            dependency("org.apache.logging.log4j:log4j-core:${log4j2Version}")
+
+            dependency("org.apache.poi:poi:${poiVersion}")
+            dependency("org.apache.poi:poi-ooxml:${poiVersion}")
+
+            dependencySet(group: 'com.documents4j', version: "${documents4jVersion}") {
+                entry 'documents4j-api'
+                entry 'documents4j-local'
+                entry 'documents4j-transformer-msoffice-word'
+            }
+
+            dependencySet(group: 'org.apache.tika', version: "${tikaVersion}") {
+                entry 'tika-core'
+                entry 'tika-parser-pdf-module'
+                entry 'tika-parser-text-module'
+                entry 'tika-parser-microsoft-module'
+                entry 'tika-parser-miscoffice-module'
+            }
+        }
+
+        generatedPomCustomization {
+            enabled = false
+        }
+        resolutionStrategy {
+            cacheChangingModulesFor 0, "seconds"
+        }
+        repositories {
+            maven { url 'https://maven.aliyun.com/repository/public' }
+            mavenCentral()
+        }
+    }
+
+    configurations.all {
+        resolutionStrategy {
+            cacheChangingModulesFor 0, "seconds"
+            cacheDynamicVersionsFor 0, "seconds"
+        }
+    }
+
+}
+
+configure(rootProject) {
+    group "plus.hutool"
+    description = "A great Java tool library based on Hutool library"
+
+    apply from: "${rootDir}/gradle/publications.gradle"
+}
+
+
+configure(moduleProjects) { project ->
+    apply from: "${rootDir}/gradle/hutool-plus-module.gradle"
+
+    tasks.withType(JavaCompile) {
+        options.encoding = "UTF-8"
+    }
+
+    tasks.withType(Javadoc) {
+        options.addStringOption('Xdoclint:none', '-quiet')
+    }
+
+    tasks.named("test") {
+        useJUnitPlatform()
+        include(["**/*Tests.class", "**/*Test.class"])
+    }
+
+    dependencies {
+        implementation("org.springframework:spring-core")
+        implementation("org.apache.logging.log4j:log4j-api")
+        implementation("org.apache.logging.log4j:log4j-core")
+        implementation("com.fasterxml.jackson.core:jackson-annotations")
+        implementation("org.slf4j:jcl-over-slf4j")
+        testImplementation("org.assertj:assertj-core")
+        testImplementation("org.junit.jupiter:junit-jupiter")
+        testImplementation("org.mockito:mockito-junit-jupiter")
+        testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
+    }
+}
+
+subprojects {
+    dependencies {
+        compileOnly("org.projectlombok:lombok")
+        annotationProcessor("org.projectlombok:lombok")
+        implementation("com.google.code.findbugs:jsr305")
+    }
+}

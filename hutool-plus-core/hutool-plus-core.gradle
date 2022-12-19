@@ -1,0 +1,7 @@
+description = "Hutool Plus Core"
+
+dependencies {
+    api("cn.hutool:hutool-core")
+    api("tech.units:indriya")
+    implementation("cn.hutool:hutool-system")
+}

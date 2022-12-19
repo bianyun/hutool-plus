@@ -1,0 +1,19 @@
+pluginManagement {
+    repositories {
+        maven { url "https://maven.aliyun.com/repository/gradle-plugin" }
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+
+rootProject.name = "hutool-plus"
+
+include("hutool-plus-core")
+include("hutool-plus-extra")
+include("hutool-plus-media")
+include("hutool-plus-spring5")
+
+rootProject.children.each { project ->
+    project.buildFileName = "${project.name}.gradle"
+}
+
