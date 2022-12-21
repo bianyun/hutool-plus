@@ -1,5 +1,7 @@
 # Hutool Plus
 
+[![CI Build](https://github.com/bianyun/hutool-plus/actions/workflows/gradle.yml/badge.svg)](https://github.com/bianyun/hutool-plus/actions/workflows/gradle.yml)
+
 ## 简介
 
 ### 由来
