@@ -68,4 +68,4 @@ dependencies {
 }
 ```
 
-> 注意：Hutool Plus 仅支持 JDK8+
+> 注意：Hutool Plus 仅支持 JDK8

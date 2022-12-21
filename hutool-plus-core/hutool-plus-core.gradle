@@ -1,4 +1,4 @@
-description = "Hutool Plus Core"
+description = "Hutool Plus Core Tools"
 
 dependencies {
     api("cn.hutool:hutool-core")

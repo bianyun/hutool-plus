@@ -1,5 +1,7 @@
 package plus.hutool.extra.json;
 
+import cn.hutool.core.io.IORuntimeException;
+import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.json.JSONConfig;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
@@ -8,9 +10,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import plus.hutool.core.datetime.DateTimeUtils;
 import plus.hutool.extra.test.TestUser;
 
@@ -19,6 +23,8 @@ import java.time.LocalDate;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.mock;
 
 class JsonUtilsTest {
 
@@ -56,6 +62,35 @@ class JsonUtilsTest {
     }
 
     @Test
+    void testToJsonStr2() {
+        final TestUser user = new TestUser();
+        user.setId(123L);
+        user.setName("张三");
+        user.setBirthday(LocalDate.of(1981, 10, 18));
+        user.setLastLoginTime(DateTimeUtils.parseLocalDateTime("2022-10-13 12:34:56"));
+
+        assertThat(JsonUtils.toJsonStr(DEFAULT_MAPPER, user)).isEqualTo("{\"id\":123,\"name\":\"张三\",\"birthday\":\"1981-10-18\",\"lastLoginTime\":\"2022-10-13T12:34:56\"}");
+        assertThat(JsonUtils.toJsonStr("test str")).isEqualTo("test str");
+    }
+
+    @Test
+    void testToJsonStrWithExceptionThrown() {
+        ObjectMapper mapper = mock(ObjectMapper.class);
+        try {
+            Mockito.when(mapper.writeValueAsString(Mockito.any(TestUser.class)))
+                    .thenThrow(ReflectUtil.newInstance(JsonProcessingException.class, "json process error"));
+
+            assertThatThrownBy(() -> JsonUtils.toJsonStr(mapper, new TestUser()))
+                    .isExactlyInstanceOf(IORuntimeException.class)
+                    .hasMessage("JsonProcessingException: json process error")
+                    .hasCauseExactlyInstanceOf(JsonProcessingException.class)
+                    .hasRootCauseMessage("json process error");
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Test
     void testToPrettyJsonStr1() {
         final TestUser user = new TestUser();
         user.setId(123L);
@@ -74,6 +109,45 @@ class JsonUtilsTest {
         assertThat(JsonUtils.toPrettyJsonStr(DEFAULT_MAPPER, user)).isEqualTo(expectedResult);
 
         assertThat(JsonUtils.toPrettyJsonStr(DEFAULT_MAPPER, "test str")).isEqualTo("test str");
+    }
+
+    @Test
+    void testToPrettyJsonStr2() {
+        final TestUser user = new TestUser();
+        user.setId(123L);
+        user.setName("张三");
+        user.setBirthday(LocalDate.of(1981, 10, 18));
+        user.setCreatedTime(DateTimeUtils.toLegacyDate(DateTimeUtils.parseLocalDateTime("2022-10-13 11:23:45")));
+        user.setLastLoginTime(DateTimeUtils.parseLocalDateTime("2022-10-13 12:34:56"));
+
+        String expectedResult = "{\n" +
+                "    \"id\": 123,\n" +
+                "    \"name\": \"张三\",\n" +
+                "    \"birthday\": \"1981-10-18\",\n" +
+                "    \"createdTime\": \"2022-10-13 11:23:45\",\n" +
+                "    \"lastLoginTime\": \"2022-10-13T12:34:56\"\n" +
+                "}";
+        assertThat(JsonUtils.toPrettyJsonStr(user)).isEqualTo(expectedResult);
+        assertThat(JsonUtils.toPrettyJsonStr("test str")).isEqualTo("test str");
+    }
+
+    @Test
+    void testToPrettyJsonStrWithExceptionThrown() {
+        ObjectMapper mapper = mock(ObjectMapper.class);
+        ObjectWriter writer = mock(ObjectWriter.class);
+        try {
+            Mockito.when(mapper.writer(Mockito.any(JsonUtils.CustomizedPrettyPrinter.class))).thenReturn(writer);
+            Mockito.when(writer.writeValueAsString(Mockito.any(TestUser.class)))
+                    .thenThrow(ReflectUtil.newInstance(JsonProcessingException.class, "json process error"));
+
+            assertThatThrownBy(() -> JsonUtils.toPrettyJsonStr(mapper, new TestUser()))
+                    .isExactlyInstanceOf(IORuntimeException.class)
+                    .hasMessage("JsonProcessingException: json process error")
+                    .hasCauseExactlyInstanceOf(JsonProcessingException.class)
+                    .hasRootCauseMessage("json process error");
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Test
@@ -142,34 +216,23 @@ class JsonUtilsTest {
     }
 
     @Test
-    void testToJsonStr2() {
-        final TestUser user = new TestUser();
-        user.setId(123L);
-        user.setName("张三");
-        user.setBirthday(LocalDate.of(1981, 10, 18));
-        user.setLastLoginTime(DateTimeUtils.parseLocalDateTime("2022-10-13 12:34:56"));
+    void testToBeanWithExceptionThrown() {
+        String jsonStr = "{\"id\":123,\"name\":\"张三\",\"birthday\":\"1981-10-18\",\"createdTime\":null,\"lastLoginTime\":\"2022-10-13T12:34:56\"}";
 
-        assertThat(JsonUtils.toJsonStr(DEFAULT_MAPPER, user)).isEqualTo("{\"id\":123,\"name\":\"张三\",\"birthday\":\"1981-10-18\",\"lastLoginTime\":\"2022-10-13T12:34:56\"}");
-        assertThat(JsonUtils.toJsonStr("test str")).isEqualTo("test str");
+        ObjectMapper mapper = mock(ObjectMapper.class);
+        try {
+            Mockito.when(mapper.readValue(jsonStr, TestUser.class))
+                    .thenThrow(ReflectUtil.newInstance(JsonProcessingException.class, "json process error"));
+
+            assertThatThrownBy(() -> JsonUtils.toBean(mapper, jsonStr, TestUser.class))
+                    .isExactlyInstanceOf(IORuntimeException.class)
+                    .hasMessage("JsonProcessingException: json process error")
+                    .hasCauseExactlyInstanceOf(JsonProcessingException.class)
+                    .hasRootCauseMessage("json process error");
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    @Test
-    void testToPrettyJsonStr2() {
-        final TestUser user = new TestUser();
-        user.setId(123L);
-        user.setName("张三");
-        user.setBirthday(LocalDate.of(1981, 10, 18));
-        user.setCreatedTime(DateTimeUtils.toLegacyDate(DateTimeUtils.parseLocalDateTime("2022-10-13 11:23:45")));
-        user.setLastLoginTime(DateTimeUtils.parseLocalDateTime("2022-10-13 12:34:56"));
 
-        String expectedResult = "{\n" +
-                "    \"id\": 123,\n" +
-                "    \"name\": \"张三\",\n" +
-                "    \"birthday\": \"1981-10-18\",\n" +
-                "    \"createdTime\": \"2022-10-13 11:23:45\",\n" +
-                "    \"lastLoginTime\": \"2022-10-13T12:34:56\"\n" +
-                "}";
-        assertThat(JsonUtils.toPrettyJsonStr(user)).isEqualTo(expectedResult);
-        assertThat(JsonUtils.toPrettyJsonStr("test str")).isEqualTo("test str");
-    }
 }

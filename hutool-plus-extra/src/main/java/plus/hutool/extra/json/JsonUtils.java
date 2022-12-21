@@ -14,6 +14,7 @@ import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import plus.hutool.core.text.string.StrUtils;
@@ -116,8 +117,10 @@ public abstract class JsonUtils {
         if (obj instanceof CharSequence) {
             return StrUtil.str((CharSequence) obj);
         }
+
         try {
-            return mapper.writer(CUSTOMIZED_PRETTY_PRINTER).writeValueAsString(obj);
+            ObjectWriter writer = mapper.writer(CUSTOMIZED_PRETTY_PRINTER);
+            return writer.writeValueAsString(obj);
         } catch (JsonProcessingException e) {
             throw new IORuntimeException(e);
         }
@@ -186,7 +189,7 @@ public abstract class JsonUtils {
         }
     }
 
-    private static class CustomizedPrettyPrinter extends DefaultPrettyPrinter {
+    static class CustomizedPrettyPrinter extends DefaultPrettyPrinter {
         private static final long serialVersionUID = 4577397349940273020L;
 
         public CustomizedPrettyPrinter() {

@@ -36,8 +36,7 @@ public abstract class PdfUtils {
     private static final String DEFAULT_OUTPUT_SUBDIR_NAME = "images";
     private static final int FIRST_PAGE_INDEX = 0;
 
-    private PdfUtils() {
-    }
+    private PdfUtils() {}
 
     /**
      * 将 PDF文件的每一页提取成图片（默认提取到 PDF文件所在目录的 images 目录下）
@@ -140,10 +139,26 @@ public abstract class PdfUtils {
         }
     }
 
-    private static List<File> splitToSinglePageFiles(PDDocument document) {
+    /**
+     * 将 PDF 文档分割成单页的 PDF文件列表
+     *
+     * @param document PDF 文档
+     * @return 单页的 PDF文件列表
+     */
+    public static List<File> splitToSinglePageFiles(PDDocument document) {
+        return splitToSinglePageFiles(document, new Splitter());
+    }
+
+    /**
+     * 将 PDF 文档分割成单页的 PDF文件列表
+     *
+     * @param document PDF 文档
+     * @param splitter 分割器
+     * @return 单页的 PDF文件列表
+     */
+    public static List<File> splitToSinglePageFiles(PDDocument document, Splitter splitter) {
         List<File> resultList = new ArrayList<>();
 
-        Splitter splitter = new Splitter();
         try {
             List<PDDocument> docs = splitter.split(document);
             for (int i = 0; i < docs.size(); i++) {
@@ -171,12 +186,13 @@ public abstract class PdfUtils {
         IntStream.range(0, size).parallel().forEach(index -> {
             byte[] datum = rawData.get(index);
             File targetFile = FileUtil.file(targetDir, index + DEFAULT_IMAGE_SUFFIX);
-            try (InputStream input = new ByteArrayInputStream(datum);
-                 OutputStream out = Files.newOutputStream(targetFile.toPath())) {
-                IoUtil.copy(input, out);
-            } catch (IOException e) {
-                throw new IORuntimeException(e);
-            }
+
+            InputStream input = new ByteArrayInputStream(datum);
+            OutputStream out = FileUtil.getOutputStream(targetFile);
+            IoUtil.copy(input, out);
+
+            IoUtil.close(input);
+            IoUtil.close(out);
         });
     }
 

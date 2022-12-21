@@ -18,27 +18,9 @@ public abstract class LogUtils {
 
     private static final String LOG_MSG_TEMPLATE = "==={}-{}";
 
-    public static void logError(Logger log, String logPrefix, String msgTemplate, Object... params) {
-        if (log.isErrorEnabled()) {
-            log.error(LOG_MSG_TEMPLATE, resolveLogPrefix(logPrefix), resolveMsg(msgTemplate, params));
-        }
-    }
-
-    public static void logError(Logger log, String logPrefix, Throwable t, String msgTemplate, Object... params) {
-        if (log.isErrorEnabled()) {
-            log.error(StrUtil.format(LOG_MSG_TEMPLATE, resolveLogPrefix(logPrefix), resolveMsg(msgTemplate, params)), t);
-        }
-    }
-
-    public static void logWarn(Logger log, String logPrefix, String msgTemplate, Object... params) {
-        if (log.isWarnEnabled()) {
-            log.warn(LOG_MSG_TEMPLATE, resolveLogPrefix(logPrefix), resolveMsg(msgTemplate, params));
-        }
-    }
-
-    public static void logInfo(Logger log, String logPrefix, String msgTemplate, Object... params) {
-        if (log.isInfoEnabled()) {
-            log.info(LOG_MSG_TEMPLATE, resolveLogPrefix(logPrefix), resolveMsg(msgTemplate, params));
+    public static void logTrace(Logger log, String logPrefix, String msgTemplate, Object... params) {
+        if (log.isTraceEnabled()) {
+            log.trace(LOG_MSG_TEMPLATE, resolveLogPrefix(logPrefix), resolveMsg(msgTemplate, params));
         }
     }
 
@@ -48,9 +30,28 @@ public abstract class LogUtils {
         }
     }
 
-    public static void logTrace(Logger log, String logPrefix, String msgTemplate, Object... params) {
-        if (log.isTraceEnabled()) {
-            log.trace(LOG_MSG_TEMPLATE, resolveLogPrefix(logPrefix), resolveMsg(msgTemplate, params));
+    public static void logInfo(Logger log, String logPrefix, String msgTemplate, Object... params) {
+        if (log.isInfoEnabled()) {
+            log.info(LOG_MSG_TEMPLATE, resolveLogPrefix(logPrefix), resolveMsg(msgTemplate, params));
+        }
+    }
+
+    public static void logWarn(Logger log, String logPrefix, String msgTemplate, Object... params) {
+        if (log.isWarnEnabled()) {
+            log.warn(LOG_MSG_TEMPLATE, resolveLogPrefix(logPrefix), resolveMsg(msgTemplate, params));
+        }
+    }
+
+
+    public static void logError(Logger log, String logPrefix, String msgTemplate, Object... params) {
+        if (log.isErrorEnabled()) {
+            log.error(LOG_MSG_TEMPLATE, resolveLogPrefix(logPrefix), resolveMsg(msgTemplate, params));
+        }
+    }
+
+    public static void logError(Logger log, String logPrefix, Throwable t, String msgTemplate, Object... params) {
+        if (log.isErrorEnabled()) {
+            log.error(StrUtil.format(LOG_MSG_TEMPLATE, resolveLogPrefix(logPrefix), resolveMsg(msgTemplate, params)), t);
         }
     }
 

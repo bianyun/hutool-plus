@@ -171,4 +171,9 @@ class StrUtilsTest {
         assertThat(StrUtils.addSuffixIfPredicateSatisfied("末尾】", " ", predicate)).isEqualTo("末尾】");
         assertThat(StrUtils.addSuffixIfPredicateSatisfied("末尾 ", " ", predicate)).isEqualTo("末尾 ");
     }
+
+    @Test
+    void testInvisibleChars() {
+        assertThat(StrUtil.isBlank(StrUtils.NUL)).isTrue();
+    }
 }

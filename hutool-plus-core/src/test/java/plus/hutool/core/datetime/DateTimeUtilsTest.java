@@ -97,7 +97,8 @@ class DateTimeUtilsTest {
 
     @Test
     void testConvertOffsetDateTimeToLocalDateTime() {
-        assertThat(DateTimeUtils.convertOffsetDateTimeToLocalDateTime("2020-01-01T11:12:13Z")).isEqualTo(LocalDateTime.of(2020, 1, 1, 19, 12, 13));
+        assertThat(DateTimeUtils.convertOffsetDateTimeToLocalDateTime("2020-01-01T11:12:13Z"))
+                .isEqualTo(OffsetDateTime.parse("2020-01-01T11:12:13Z").atZoneSameInstant(ZoneId.systemDefault()).toLocalDateTime());
         assertThatThrownBy(() -> DateTimeUtils.convertOffsetDateTimeToLocalDateTime("2020-01-40T11:12:13Z")).isInstanceOf(DateTimeParseException.class);
     }
 

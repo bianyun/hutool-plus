@@ -1,4 +1,4 @@
-description = "Hutool Plus Core"
+description = "Hutool Plus Spring5 Tools"
 
 dependencies {
     api(project(":hutool-plus-core"))

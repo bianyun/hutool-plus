@@ -21,16 +21,18 @@ configure(subprojects) { project ->
     apply plugin: "io.spring.dependency-management"
 
     ext {
-        springVersion = '5.3.24'
         hutoolVersion = '5.8.10'
+        springVersion = '5.3.24'
         log4j2Version = '2.19.0'
+        poiVersion = '5.2.3'
+        documents4jVersion = '1.1.10'
+        tikaVersion = '2.6.0'
+
         jsr305Version = '3.0.2'
         indriyaVersion = '2.1.3'
-        tikaVersion = '2.6.0'
-        poiVersion = '5.2.3'
         pdfboxVersion = '2.0.27'
-        documents4jVersion = '1.1.10'
         imgscalrVersion = '4.2'
+        logCaptorVersion = '2.7.10'
     }
 
     dependencyManagement {
@@ -43,11 +45,6 @@ configure(subprojects) { project ->
             dependency("org.springframework:spring-core:${springVersion}") {
                 exclude group: "org.springframework", name: "spring-jcl"
             }
-
-            dependency("com.google.code.findbugs:jsr305:${jsr305Version}")
-            dependency("tech.units:indriya:${indriyaVersion}")
-            dependency("org.apache.pdfbox:pdfbox:${pdfboxVersion}")
-            dependency("org.imgscalr:imgscalr-lib:${imgscalrVersion}")
 
             dependency("org.apache.logging.log4j:log4j-api:${log4j2Version}")
             dependency("org.apache.logging.log4j:log4j-core:${log4j2Version}")
@@ -68,6 +65,12 @@ configure(subprojects) { project ->
                 entry 'tika-parser-microsoft-module'
                 entry 'tika-parser-miscoffice-module'
             }
+
+            dependency("com.google.code.findbugs:jsr305:${jsr305Version}")
+            dependency("tech.units:indriya:${indriyaVersion}")
+            dependency("org.apache.pdfbox:pdfbox:${pdfboxVersion}")
+            dependency("org.imgscalr:imgscalr-lib:${imgscalrVersion}")
+            dependency("io.github.hakky54:logcaptor:${logCaptorVersion}")
         }
 
         generatedPomCustomization {
@@ -113,6 +116,13 @@ configure(moduleProjects) { project ->
     tasks.named("test") {
         useJUnitPlatform()
         include(["**/*Tests.class", "**/*Test.class"])
+    }
+
+    test {
+        testLogging {
+            events "failed"
+            exceptionFormat "full"
+        }
     }
 
     dependencies {

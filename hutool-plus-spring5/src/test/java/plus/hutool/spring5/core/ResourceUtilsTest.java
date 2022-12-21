@@ -1,12 +1,17 @@
 package plus.hutool.spring5.core;
 
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.io.IORuntimeException;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.core.io.Resource;
 
 import java.io.File;
+import java.net.MalformedURLException;
+import java.nio.file.Path;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class ResourceUtilsTest {
 
@@ -36,5 +41,16 @@ class ResourceUtilsTest {
         assertThat(result.isFile()).isTrue();
         assertThat(result.getFilename()).isEqualTo("test.jpg");
         assertThat(result.exists()).isTrue();
+
+        final File mockedFile = Mockito.mock(File.class);
+        final Path mockedPath = Mockito.mock(Path.class);
+        Mockito.when(mockedFile.toPath()).thenReturn(mockedPath);
+        Mockito.when(mockedPath.toUri()).thenAnswer(invocation -> {
+            throw new MalformedURLException();
+        });
+        assertThatThrownBy(() -> ResourceUtils.loadFileAsSpringResource(mockedFile))
+                .isInstanceOf(IORuntimeException.class)
+                .hasMessage("shouldn't reach here")
+                .hasCauseExactlyInstanceOf(MalformedURLException.class);
     }
 }

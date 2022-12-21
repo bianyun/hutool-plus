@@ -43,8 +43,8 @@ public abstract class ResourceUtils {
     public static Resource loadFileAsSpringResource(File file) {
         try {
             return new UrlResource(file.toPath().toUri());
-        } catch (MalformedURLException ex) {
-            throw new IORuntimeException("shouldn't reach here");
+        } catch (MalformedURLException e) {
+            throw new IORuntimeException("shouldn't reach here", e);
         }
     }
 }
