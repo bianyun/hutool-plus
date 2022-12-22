@@ -77,6 +77,14 @@ jacocoTestReport {
 	reports {
 		xml.required = true
 	}
+
+	afterEvaluate {
+		classDirectories.setFrom(files(classDirectories.files.collect {
+			fileTree(dir: it, exclude: [
+				"plus/hutool/media/document/convert/DocumentConvertUtils.class"
+			])
+		}))
+	}
 }
 
 jacoco {
