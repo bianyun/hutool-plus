@@ -11,7 +11,12 @@ import plus.hutool.core.lang.Asserts;
 import plus.hutool.core.math.NumberUtils;
 import plus.hutool.core.text.string.StrUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -24,19 +29,10 @@ import java.util.stream.Collectors;
  */
 @SuppressWarnings({"JavadocDeclaration", "AlibabaAbstractClassShouldStartWithAbstractNaming"})
 public abstract class StopWatchUtils {
-    private StopWatchUtils() {}
 
     private static final String TASK_LINE_TEMPLATE = " {}{}  => [{}] {}";
 
-    /**
-     * 获取 秒表 {@link StopWatch} 的汇总时长（更易读的形如 '1h 23m 45.678s' 的格式）
-     *
-     * @param sw 秒表对象
-     * @return 汇总时长（更易读的形如 '1h 23m 45.678s' 的格式）
-     */
-    public static String getMoreReadableSummaryTime(StopWatch sw) {
-        safelyStop(sw);
-        return DateTimeUtils.millisToMoreReadableFormat(sw.getTotalTimeMillis());
+    private StopWatchUtils() {
     }
 
     /**
@@ -63,7 +59,7 @@ public abstract class StopWatchUtils {
      *
      * <pre>
      * // 示例1: 不使用额外的任务过滤器
-     * List<String> result = StopWatchUtils.getDetailedStatsWithBetterFormat(sw,
+     * List&lt;String&gt; result = StopWatchUtils.getDetailedStatsWithBetterFormat(sw,
      *      summaryTitle);
      * <p>返回的结果样例如下:</p>
      * ----------------------------------------------------------
@@ -79,7 +75,7 @@ public abstract class StopWatchUtils {
      * // 示例2: 使用默认的分页指标过滤器
      * final TaskFilter pageMetricFilter =
      *      TaskFilter.defaultPageMetricFilter(PAGE_SIZE, TOTAL_COUNT);
-     * List<String> result = StopWatchUtils.getDetailedStatsWithBetterFormat(sw,
+     * List&lt;String&gt; result = StopWatchUtils.getDetailedStatsWithBetterFormat(sw,
      *      summaryTitle, pageMetricFilter);
      * <p>返回的结果样例如下:</p>
      * ----------------------------------------------------------
@@ -103,7 +99,7 @@ public abstract class StopWatchUtils {
      *          return StrUtil.format("{}ms / MB", millisPerMb);
      *      }
      * );
-     * List<String> result = StopWatchUtils.getDetailedStatsWithBetterFormat(sw,
+     * List&lt;String&gt; result = StopWatchUtils.getDetailedStatsWithBetterFormat(sw,
      *      summaryTitle, pageMetricFilter, fileTransferFilter);
      * <p>返回的结果样例如下:</p>
      * ---------------------------------------------------------------
@@ -162,7 +158,7 @@ public abstract class StopWatchUtils {
      *          return StrUtil.format("{}ms / MB", millisPerMb);
      *      }
      * );
-     * List<String> result = StopWatchUtils.getDetailedStatsWithBetterFormat(sw,
+     * List&lt;String&gt; result = StopWatchUtils.getDetailedStatsWithBetterFormat(sw,
      *      summaryTitleList, pageMetricFilter, fileTransferFilter);
      * </pre>
      *
@@ -182,6 +178,7 @@ public abstract class StopWatchUtils {
      *  5. 任务步骤5  => [ 7.4%]  626.072s ( 5.217s / 5000)
      * ---------------------------------------------------------------
      * </pre>
+     *
      * @param sw               秒表对象
      * @param summaryTitleList 汇总标题列表
      * @param taskFilters      任务过滤器数组（用于控制任务行的额外指标展示）
@@ -233,6 +230,17 @@ public abstract class StopWatchUtils {
 
         outputLines.add(separatorLine);
         return outputLines;
+    }
+
+    /**
+     * 获取 秒表 {@link StopWatch} 的汇总时长（更易读的形如 '1h 23m 45.678s' 的格式）
+     *
+     * @param sw 秒表对象
+     * @return 汇总时长（更易读的形如 '1h 23m 45.678s' 的格式）
+     */
+    public static String getMoreReadableSummaryTime(StopWatch sw) {
+        safelyStop(sw);
+        return DateTimeUtils.millisToMoreReadableFormat(sw.getTotalTimeMillis());
     }
 
     /**
@@ -326,9 +334,9 @@ public abstract class StopWatchUtils {
                 }
 
                 if (CollUtil.isNotEmpty(taskMetricList)) {
-                    taskLine += StrUtil.SPACE + StrUtils.OPEN_PARENTHESIS +
-                            StrUtils.join(", ", taskMetricList) +
-                            StrUtils.CLOSE_PARENTHESIS + StrUtils.SPACE;
+                    taskLine += StrUtil.SPACE + StrUtils.OPEN_PARENTHESIS
+                            + StrUtils.join(", ", taskMetricList)
+                            + StrUtils.CLOSE_PARENTHESIS + StrUtils.SPACE;
                 }
             }
 
@@ -337,7 +345,8 @@ public abstract class StopWatchUtils {
         return resultList;
     }
 
-    private static List<Integer> getMaxLenOfFilterResultList(Map<String, Long> taskTimeMillisMap, TaskFilter... taskFilters) {
+    private static List<Integer> getMaxLenOfFilterResultList(Map<String, Long> taskTimeMillisMap,
+                                                             TaskFilter... taskFilters) {
         List<Integer> resultList = new ArrayList<>();
         if (taskFilters.length > 0) {
             for (int i = 0; i < taskFilters.length; i++) {
@@ -353,11 +362,21 @@ public abstract class StopWatchUtils {
         return resultList;
     }
 
+    /**
+     * 秒表 {@link StopWatch} 任务过滤器
+     */
     @lombok.Value(staticConstructor = "of")
     public static class TaskFilter {
         Predicate<String> taskNamePredicate;
         Function<Long, String> taskMillisToMetricFunc;
 
+        /**
+         * 默认的分页指标过滤器
+         *
+         * @param pageSize 页大小
+         * @param totalNum 总数
+         * @return 分页指标过滤器
+         */
         public static TaskFilter defaultPageMetricFilter(int pageSize, long totalNum) {
             return TaskFilter.of(
                     taskName -> true,

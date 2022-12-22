@@ -30,6 +30,14 @@ public abstract class MediaTypeUtils {
 
     private MediaTypeUtils() {}
 
+    /**
+     * 判断 媒体类型 {@link MediaType} 对象是否是指定的媒体类型中的任意一个
+     *
+     * @param lhsType    媒体类型 {@link MediaType} 对象
+     * @param first      第一个媒体类型对象
+     * @param remainings 剩余的所有媒体对象（变长参数）
+     * @return 媒体类型 {@link MediaType} 对象是否是指定的媒体类型中的任意一个
+     */
     public static boolean isAnyOf(MediaType lhsType, MediaType first, MediaType... remainings) {
         if (lhsType.equals(first)) {
             return true;
@@ -43,14 +51,20 @@ public abstract class MediaTypeUtils {
         return false;
     }
 
+    /**
+     * 检测媒体类型 {@link MediaType}
+     *
+     * @param file 待检测的文件
+     * @return 媒体类型
+     */
     public static MediaType detectMediaType(File file) {
         String mediaTypeValue = TikaUtils.detectMediaType(file);
         Asserts.notBlank(mediaTypeValue, "文件的媒体类型不能为空: {}", file.getAbsolutePath());
 
         if (OBSOLETED_TYPES_MAP.containsKey(mediaTypeValue)) {
             return OBSOLETED_TYPES_MAP.get(mediaTypeValue);
-        } else if (mediaTypeValue.equals(MediaType.APPLICATION_OCTET_STREAM_VALUE) ||
-                mediaTypeValue.equals(MediaType.TEXT_PLAIN_VALUE)) {
+        } else if (mediaTypeValue.equals(MediaType.APPLICATION_OCTET_STREAM_VALUE)
+                || mediaTypeValue.equals(MediaType.TEXT_PLAIN_VALUE)) {
             String fileExtension = FileUtils.getFileExtension(file.getName());
             if (StrUtil.isNotBlank(fileExtension)) {
                 MediaType result = MediaType.getOneByFileExtension(fileExtension);
@@ -67,6 +81,12 @@ public abstract class MediaTypeUtils {
         return fromFullType(mediaTypeValue);
     }
 
+    /**
+     * 从完整类型字符串创建媒体类型 {@link MediaType} 对象
+     *
+     * @param fullType 完整类型字符串
+     * @return 媒体类型 {@link MediaType} 对象
+     */
     public static MediaType fromFullType(String fullType) {
         int separator = fullType.indexOf('/');
         if (separator == -1 || fullType.length() == separator + 1) {
@@ -78,6 +98,12 @@ public abstract class MediaTypeUtils {
         }
     }
 
+    /**
+     * 构建支持的媒体类型列表
+     *
+     * @param mediaTypes {@link MediaType}
+     * @return 支持的媒体类型字符串列表
+     */
     public static List<String> buildSupportedMediaTypes(MediaType... mediaTypes) {
         List<String> resultList = new ArrayList<>();
         for (MediaType type : mediaTypes) {
@@ -86,7 +112,16 @@ public abstract class MediaTypeUtils {
         return resultList;
     }
 
-    public static void checkIfMediaTypeSupported(String fileMediaType, String originalFilename, List<String> supportedMediaTypes) {
+    /**
+     * 检查指定的媒体类型是否被支持
+     *
+     * @param fileMediaType       媒体类型
+     * @param originalFilename    原始文件名
+     * @param supportedMediaTypes 支持的媒体类型
+     */
+    public static void checkIfMediaTypeSupported(String fileMediaType,
+                                                 String originalFilename,
+                                                 List<String> supportedMediaTypes) {
         if (!supportedMediaTypes.contains(fileMediaType)) {
             String filenameExtension = FileUtils.getFileExtensionWithPrefixDot(originalFilename);
 

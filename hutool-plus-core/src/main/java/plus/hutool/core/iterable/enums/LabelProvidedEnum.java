@@ -11,6 +11,7 @@ public interface LabelProvidedEnum {
 
     /**
      * 获取 枚举常量对应的标签名称（标签名称一般为枚举常量对应的中文名）
+     *
      * @return 标签名称
      */
     String getLabel();

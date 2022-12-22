@@ -2,7 +2,11 @@ package plus.hutool.core.lang;
 
 import org.springframework.lang.Nullable;
 
-import java.lang.reflect.*;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.util.stream.IntStream;
 
 /**
@@ -62,8 +66,8 @@ public abstract class ReflectUtils {
             return null;
         }
 
-        if (!(targetClazz.getGenericSuperclass() instanceof ParameterizedType) &&
-                targetClazz.getGenericInterfaces().length == 0) {
+        if (!(targetClazz.getGenericSuperclass() instanceof ParameterizedType)
+                && targetClazz.getGenericInterfaces().length == 0) {
             return null;
         }
 

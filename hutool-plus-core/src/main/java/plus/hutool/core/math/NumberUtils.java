@@ -21,13 +21,14 @@ import java.text.NumberFormat;
  */
 @SuppressWarnings({"JavadocDeclaration", "AlibabaAbstractClassShouldStartWithAbstractNaming"})
 public abstract class NumberUtils {
-    private NumberUtils() {}
 
     public static final String ONE_HUNDRED_PERCENT = "100%";
     public static final String ONE_HUNDRED_PERCENT_WITH_SCALE_ONE = "100.0%";
     public static final String ONE_HUNDRED_PERCENT_WITH_SCALE_TWO = "100.00%";
     public static final String NINETY_NINE_PERCENT = "99%";
     public static final String ZERO_PERCENT = "0%";
+
+    private NumberUtils() {}
 
     /**
      * 判断数值是否大于零

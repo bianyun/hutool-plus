@@ -18,7 +18,6 @@ import java.nio.file.Paths;
  */
 @SuppressWarnings({"JavadocDeclaration", "AlibabaAbstractClassShouldStartWithAbstractNaming"})
 public abstract class FileUtils {
-    private FileUtils() {}
 
     public static final String TEMP_DIR = SystemUtil.getUserInfo().getTempDir();
     @SuppressWarnings("unused")
@@ -26,6 +25,8 @@ public abstract class FileUtils {
 
     static final int RANDOM_FILENAME_LENGTH = 16;
     static final int RANDOM_DIRNAME_LENGTH = 6;
+
+    private FileUtils() {}
 
     /**
      * 获取文件扩展名（不含点号）

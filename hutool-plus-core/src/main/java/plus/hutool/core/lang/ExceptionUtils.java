@@ -42,9 +42,11 @@ public abstract class ExceptionUtils {
         return new FileNotFoundException(StrUtil.format(msgTemplate, args));
     }
 
-    public static UnsupportedClientRequestException unsupportedClientRequestException(String msgTemplate, Object... args) {
+    public static UnsupportedClientRequestException unsupportedClientRequestException(String msgTemplate,
+                                                                                      Object... args) {
         return new UnsupportedClientRequestException(StrUtil.format(msgTemplate, args));
     }
+
     @SuppressWarnings("UnusedReturnValue")
     public static <T> T unreachableButCompilerNeedsThis() {
         throw new AssertionError("this code should never be reached");

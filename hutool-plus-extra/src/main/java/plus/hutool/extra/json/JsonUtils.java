@@ -31,7 +31,6 @@ import java.util.Map;
  */
 @SuppressWarnings({"JavadocDeclaration", "AlibabaAbstractClassShouldStartWithAbstractNaming"})
 public abstract class JsonUtils {
-    private JsonUtils() {}
 
     private static final String PRETTY_OBJECT_FIELD_VALUE_SEPARATOR = ": ";
     private static final DefaultPrettyPrinter CUSTOMIZED_PRETTY_PRINTER = new CustomizedPrettyPrinter();
@@ -43,6 +42,8 @@ public abstract class JsonUtils {
             .serializationInclusion(JsonInclude.Include.NON_NULL)
             .findAndAddModules()
             .build();
+
+    private JsonUtils() {}
 
     public static ObjectMapper getDefaultJacksonObjectMapper() {
         return DEFAULT_MAPPER;

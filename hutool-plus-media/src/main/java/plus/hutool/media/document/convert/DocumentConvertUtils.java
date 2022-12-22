@@ -33,7 +33,8 @@ public abstract class DocumentConvertUtils {
         return convert(path.toFile(), srcDocType, targetDocType, DEFAULT_PROCESS_TIMEOUT_SECONDS);
     }
 
-    public static File convert(Path path, DocumentType srcDocType, DocumentType targetDocType, int processTimeoutSeconds) {
+    public static File convert(Path path, DocumentType srcDocType, DocumentType targetDocType,
+                               int processTimeoutSeconds) {
         return convert(path.toFile(), srcDocType, targetDocType, processTimeoutSeconds);
     }
 
@@ -41,7 +42,17 @@ public abstract class DocumentConvertUtils {
         return convert(srcFile, srcDocType, targetDocType, DEFAULT_PROCESS_TIMEOUT_SECONDS);
     }
 
-    public static File convert(File srcFile, DocumentType srcDocType, DocumentType targetDocType, int processTimeoutSeconds) {
+    /**
+     * 文档格式转换
+     *
+     * @param srcFile               源文件
+     * @param srcDocType            源文档类型
+     * @param targetDocType         目标文档类型
+     * @param processTimeoutSeconds 处理超时时间（秒）
+     * @return 转换后的文档文件
+     */
+    public static File convert(File srcFile, DocumentType srcDocType, DocumentType targetDocType,
+                               int processTimeoutSeconds) {
         String srcFilePath = srcFile.getAbsolutePath();
         Asserts.isTrue(srcFile.exists() && srcFile.isFile(), "文件必须存在: {}", srcFilePath);
 

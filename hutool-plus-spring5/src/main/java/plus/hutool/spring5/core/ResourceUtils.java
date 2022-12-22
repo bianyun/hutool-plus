@@ -26,12 +26,13 @@ public abstract class ResourceUtils {
      * @param classpathFilePath 文件的类路径
      * @return Spring {@link Resource} 对象
      */
-    public static Resource loadClassPathFileAsSpringResource(String classpathFilePath) {
+    public static Resource loadClassPathFileAsSpringResource(final String classpathFilePath) {
         ResourceLoader resourceLoader = new DefaultResourceLoader();
-        if (!StrUtil.startWith(classpathFilePath, ResourceLoader.CLASSPATH_URL_PREFIX)) {
-            classpathFilePath = ResourceLoader.CLASSPATH_URL_PREFIX + classpathFilePath;
+        String newClasspathFilePath = classpathFilePath;
+        if (!StrUtil.startWith(newClasspathFilePath, ResourceLoader.CLASSPATH_URL_PREFIX)) {
+            newClasspathFilePath = ResourceLoader.CLASSPATH_URL_PREFIX + newClasspathFilePath;
         }
-        return resourceLoader.getResource(classpathFilePath);
+        return resourceLoader.getResource(newClasspathFilePath);
     }
 
     /**

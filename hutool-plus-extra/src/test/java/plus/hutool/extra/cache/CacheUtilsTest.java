@@ -1,6 +1,10 @@
 package plus.hutool.extra.cache;
 
-import cn.hutool.cache.impl.*;
+import cn.hutool.cache.impl.FIFOCache;
+import cn.hutool.cache.impl.LFUCache;
+import cn.hutool.cache.impl.LRUCache;
+import cn.hutool.cache.impl.TimedCache;
+import cn.hutool.cache.impl.WeakCache;
 import cn.hutool.core.thread.ThreadUtil;
 import org.junit.jupiter.api.Test;
 

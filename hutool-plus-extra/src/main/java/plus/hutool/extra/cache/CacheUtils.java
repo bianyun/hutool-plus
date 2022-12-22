@@ -1,6 +1,10 @@
 package plus.hutool.extra.cache;
 
-import cn.hutool.cache.impl.*;
+import cn.hutool.cache.impl.FIFOCache;
+import cn.hutool.cache.impl.LFUCache;
+import cn.hutool.cache.impl.LRUCache;
+import cn.hutool.cache.impl.TimedCache;
+import cn.hutool.cache.impl.WeakCache;
 
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
@@ -11,7 +15,11 @@ import java.util.concurrent.TimeUnit;
  * @author bianyun
  * @date 2022/12/06
  */
-@SuppressWarnings({"JavadocDeclaration", "AlibabaLowerCamelCaseVariableNaming", "AlibabaAbstractClassShouldStartWithAbstractNaming"})
+@SuppressWarnings({
+        "JavadocDeclaration",
+        "AlibabaLowerCamelCaseVariableNaming",
+        "AlibabaAbstractClassShouldStartWithAbstractNaming"
+})
 public abstract class CacheUtils {
     private CacheUtils() {}
 

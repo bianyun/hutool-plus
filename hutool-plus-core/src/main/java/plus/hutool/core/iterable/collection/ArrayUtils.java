@@ -2,7 +2,11 @@ package plus.hutool.core.iterable.collection;
 
 import cn.hutool.core.util.ArrayUtil;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * 数组工具类
@@ -14,7 +18,8 @@ import java.util.*;
 public abstract class ArrayUtils {
     public static final int[] EMPTY_INT_ARRAY = new int[0];
 
-    private ArrayUtils() {}
+    private ArrayUtils() {
+    }
 
     /**
      * 判断字符串数组是否包含指定字符串列表中的任意一个字符串（不区分大小写）

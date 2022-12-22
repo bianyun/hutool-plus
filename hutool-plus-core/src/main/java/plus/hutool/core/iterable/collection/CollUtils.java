@@ -4,7 +4,12 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import plus.hutool.core.lang.Asserts;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * 集合工具类
@@ -14,8 +19,7 @@ import java.util.*;
  */
 @SuppressWarnings({"JavadocDeclaration", "AlibabaAbstractClassShouldStartWithAbstractNaming"})
 public abstract class CollUtils {
-    private CollUtils() {
-    }
+    private CollUtils() {}
 
     /**
      * 将字符串分割成字符串（并裁剪两边的空白字符）集合
@@ -48,7 +52,6 @@ public abstract class CollUtils {
         List<T> tempList = new ArrayList<>(set);
         return Collections.unmodifiableList(tempList);
     }
-
 
     /**
      * 构建元素不可变的列表

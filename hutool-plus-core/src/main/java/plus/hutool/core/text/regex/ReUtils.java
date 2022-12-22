@@ -4,7 +4,11 @@ import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
 import plus.hutool.core.text.string.StrUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -16,7 +20,6 @@ import java.util.stream.Collectors;
  */
 @SuppressWarnings({"JavadocDeclaration", "AlibabaAbstractClassShouldStartWithAbstractNaming"})
 public abstract class ReUtils {
-    private ReUtils() {}
 
     private static final int INDEX_NOT_FOUND = -1;
 
@@ -29,6 +32,8 @@ public abstract class ReUtils {
      * 正则表达式匹配的分组2
      */
     public static final String REGEX_GROUP_2 = "$2";
+
+    private ReUtils() {}
 
     /**
      * 根据正则表达式列表构建 正则 {@link Pattern} 列表
@@ -91,7 +96,9 @@ public abstract class ReUtils {
      * @param template          模板（示例：$1$2）
      * @return 根据指定的模板替换后的内容
      */
-    public static String extractByFirstMatchedPattern(List<Pattern> candidatePatterns, CharSequence content, String template) {
+    public static String extractByFirstMatchedPattern(List<Pattern> candidatePatterns,
+                                                      CharSequence content,
+                                                      String template) {
         for (Pattern pattern : candidatePatterns) {
             if (ReUtil.isMatch(pattern, content)) {
                 return ReUtil.extractMulti(pattern, content, template);
@@ -237,7 +244,10 @@ public abstract class ReUtils {
      * @param endIndex     结束的索引序号（不包含此序号对应的字符串）
      * @return 所有能匹配正则表达式 Pattern 的字符串的索引序号列表
      */
-    public static List<Integer> indexesOfAllMatchedLines(List<String> lines, Pattern regexPattern, int startIndex, int endIndex) {
+    public static List<Integer> indexesOfAllMatchedLines(List<String> lines,
+                                                         Pattern regexPattern,
+                                                         int startIndex,
+                                                         int endIndex) {
         int start = Math.max(0, startIndex);
         int end = Math.min(lines.size(), endIndex);
 

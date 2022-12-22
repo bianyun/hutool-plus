@@ -27,18 +27,20 @@ import java.util.stream.Collectors;
 public abstract class ExcelWorksheetUtils {
     private static final String HEADER_SUFFIX_DATE = "日期";
 
-    private ExcelWorksheetUtils() {}
-
-    public static List<String> readHeaders(Sheet sheet) {
-        Row headerRow = RowUtil.getOrCreateRow(sheet, 0);
-        return RowUtil.readRow(headerRow, new TrimEditor()).stream()
-                .map(Object::toString).filter(StrUtil::isNotBlank).collect(Collectors.toList());
+    private ExcelWorksheetUtils() {
     }
 
     public static List<Map<String, String>> readAllData(Sheet sheet) {
         return readAllData(sheet, Collections.emptyMap());
     }
 
+    /**
+     * 读取所有数据
+     *
+     * @param sheet       工作表 {@link Sheet}
+     * @param headerAlias 表头映射表
+     * @return 所有数据
+     */
     public static List<Map<String, String>> readAllData(Sheet sheet, Map<String, String> headerAlias) {
         try (ExcelReader reader = new ExcelReader(sheet)) {
             if (CollUtil.isNotEmpty(headerAlias)) {
@@ -57,15 +59,16 @@ public abstract class ExcelWorksheetUtils {
         }
     }
 
-    private static String toStr(String key, Object cellValue) {
-        String strValue;
-        if (cellValue instanceof DateTime) {
-            strValue = convertDateTimeToStr(key, (DateTime)cellValue);
-        } else {
-            strValue = String.valueOf(cellValue).trim();
-        }
-
-        return strValue;
+    /**
+     * 读取工作表 {@link Sheet} 的表头列表
+     *
+     * @param sheet 工作表 {@link Sheet}
+     * @return 表头列表
+     */
+    public static List<String> readHeaders(Sheet sheet) {
+        Row headerRow = RowUtil.getOrCreateRow(sheet, 0);
+        return RowUtil.readRow(headerRow, new TrimEditor()).stream()
+                .map(Object::toString).filter(StrUtil::isNotBlank).collect(Collectors.toList());
     }
 
     private static String convertDateTimeToStr(String header, DateTime value) {
@@ -84,5 +87,16 @@ public abstract class ExcelWorksheetUtils {
         } else {
             return value.toString("yyyy-MM-dd HH:mm:ss");
         }
+    }
+
+    private static String toStr(String key, Object cellValue) {
+        String strValue;
+        if (cellValue instanceof DateTime) {
+            strValue = convertDateTimeToStr(key, (DateTime) cellValue);
+        } else {
+            strValue = String.valueOf(cellValue).trim();
+        }
+
+        return strValue;
     }
 }

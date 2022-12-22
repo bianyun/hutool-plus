@@ -5,7 +5,11 @@ import plus.hutool.core.test.enums.TestEnum1;
 import plus.hutool.core.test.enums.TestEnum2;
 import plus.hutool.core.test.enums.TestEnum3;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

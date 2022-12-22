@@ -11,7 +11,6 @@ import plus.hutool.core.text.string.StrUtils;
  */
 @SuppressWarnings({"JavadocDeclaration", "AlibabaAbstractClassShouldStartWithAbstractNaming"})
 public abstract class OssUtils {
-    private OssUtils() {}
 
     /**
      * 规范 OSS 中的目录路径
@@ -19,10 +18,13 @@ public abstract class OssUtils {
      * @param dirPathInOss OSS 目录路径
      * @return 规范后的 OSS 目录路径
      */
-    public static String normalizeDirPathInOss(String dirPathInOss) {
-        dirPathInOss = dirPathInOss.replaceAll("\\s*/{2,}\\s*", StrUtils.SLASH);
-        dirPathInOss = StrUtil.removePrefix(dirPathInOss, StrUtils.SLASH);
-        dirPathInOss = StrUtil.removeSuffix(dirPathInOss, StrUtils.SLASH);
-        return dirPathInOss;
+    public static String normalizeDirPathInOss(final String dirPathInOss) {
+        String newDirPathInOss = dirPathInOss;
+        newDirPathInOss = newDirPathInOss.replaceAll("\\s*/{2,}\\s*", StrUtils.SLASH);
+        newDirPathInOss = StrUtil.removePrefix(newDirPathInOss, StrUtils.SLASH);
+        newDirPathInOss = StrUtil.removeSuffix(newDirPathInOss, StrUtils.SLASH);
+        return newDirPathInOss;
     }
+
+    private OssUtils() {}
 }

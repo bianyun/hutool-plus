@@ -20,9 +20,10 @@ import java.util.function.Supplier;
  */
 @SuppressWarnings("JavadocDeclaration")
 public class Asserts {
-    private Asserts() {}
 
     static final String TEMPLATE_VALUE_MUST_BE_BETWEEN_AND = "The value must be between {} and {}.";
+
+    private Asserts() {}
 
     /**
      * 断言是否为真，如果为 {@code false} 抛出给定的异常<br>
@@ -54,7 +55,8 @@ public class Asserts {
      * @param params           参数列表
      * @throws IllegalArgumentException if expression is {@code false}
      */
-    public static void isTrue(boolean expression, String errorMsgTemplate, Object... params) throws IllegalArgumentException {
+    public static void isTrue(boolean expression, String errorMsgTemplate, Object... params)
+            throws IllegalArgumentException {
         isTrue(expression, () -> new IllegalArgumentException(StrUtil.format(errorMsgTemplate, params)));
     }
 
@@ -88,7 +90,8 @@ public class Asserts {
      * @param params           参数列表
      * @throws IllegalArgumentException if expression is {@code false}
      */
-    public static void isFalse(boolean expression, String errorMsgTemplate, Object... params) throws IllegalArgumentException {
+    public static void isFalse(boolean expression, String errorMsgTemplate, Object... params)
+            throws IllegalArgumentException {
         isFalse(expression, () -> new IllegalArgumentException(StrUtil.format(errorMsgTemplate, params)));
     }
 
@@ -112,8 +115,8 @@ public class Asserts {
 
     /**
      * 断言对象是否为{@code null} ，如果不为{@code null} 抛出{@link IllegalArgumentException} 异常
-     * <p>
-     * <pre class="code">
+     *
+     * <p><pre class="code">
      *   Asserts.isNull(object, "The value must be null");
      * </pre>
      *
@@ -122,11 +125,10 @@ public class Asserts {
      * @param params           参数列表
      * @throws IllegalArgumentException if the object is not {@code null}
      */
-    public static void isNull(@Nullable Object object, String errorMsgTemplate, Object... params) throws IllegalArgumentException {
+    public static void isNull(@Nullable Object object, String errorMsgTemplate, Object... params)
+            throws IllegalArgumentException {
         isNull(object, () -> new IllegalArgumentException(StrUtil.format(errorMsgTemplate, params)));
     }
-
-    // ----------------------------------------------------------------------------------------------------------- Check not null
 
     /**
      * 断言对象是否不为{@code null} ，如果为{@code null} 抛出指定类型异常
@@ -150,9 +152,9 @@ public class Asserts {
     }
 
     /**
-     * 断言对象是否不为{@code null} ，如果为{@code null} 抛出{@link IllegalArgumentException} 异常 Asserts that an object is not {@code null} .
-     * <p>
-     * <pre class="code">
+     * 断言对象是否不为{@code null} ，如果为{@code null} 抛出{@link IllegalArgumentException} 异常
+     *
+     * <p><pre class="code">
      *   Asserts.notNull(clazz, "The class must not be null");
      * </pre>
      *
@@ -163,7 +165,8 @@ public class Asserts {
      * @return 被检查后的对象
      * @throws IllegalArgumentException if the object is {@code null}
      */
-    public static <T> T notNull(@Nullable T object, String errorMsgTemplate, Object... params) throws IllegalArgumentException {
+    public static <T> T notNull(@Nullable T object, String errorMsgTemplate, Object... params)
+            throws IllegalArgumentException {
         return notNull(object, () -> new IllegalArgumentException(StrUtil.format(errorMsgTemplate, params)));
     }
 
@@ -181,7 +184,8 @@ public class Asserts {
      * @return 非空字符串
      * @throws X 被检查字符串为空白
      */
-    public static <T extends CharSequence, X extends Throwable> T notBlank(@Nullable T text, Supplier<X> errorMsgSupplier) throws X {
+    public static <T extends CharSequence, X extends Throwable> T notBlank(@Nullable T text,
+                                                                           Supplier<X> errorMsgSupplier) throws X {
         if (StrUtil.isBlank(text)) {
             throw errorMsgSupplier.get();
         }
@@ -202,15 +206,16 @@ public class Asserts {
      * @return 非空字符串
      * @throws IllegalArgumentException 被检查字符串为空白
      */
-    public static <T extends CharSequence> T notBlank(@Nullable T text, String errorMsgTemplate, Object... params) throws IllegalArgumentException {
+    public static <T extends CharSequence> T notBlank(@Nullable T text, String errorMsgTemplate, Object... params)
+            throws IllegalArgumentException {
         return notBlank(text, () -> new IllegalArgumentException(StrUtil.format(errorMsgTemplate, params)));
     }
 
     /**
      * 断言给定数组是否包含元素，数组必须不为 {@code null} 且至少包含一个元素
      * 并使用指定的函数获取错误信息返回
-     * <p>
-     * <pre class="code">
+     *
+     * <p><pre class="code">
      *   Asserts.notEmptyArray(array, () -> new RuntimeException("errorMsg"));
      * </pre>
      *
@@ -271,8 +276,8 @@ public class Asserts {
 
     /**
      * 断言给定集合非空
-     * <p>
-     * <pre class="code">
+     *
+     * <p><pre class="code">
      *   Asserts.notEmptyArray(collection, "Collection must have elements");
      * </pre>
      *
@@ -316,8 +321,8 @@ public class Asserts {
 
     /**
      * 断言给定Map非空
-     * <p>
-     * <pre class="code">
+     *
+     * <p><pre class="code">
      *   Asserts.notEmptyArray(map, "Map must have entries");
      * </pre>
      *
@@ -338,8 +343,8 @@ public class Asserts {
 
     /**
      * 断言给定对象是否是给定类的实例
-     * <p>
-     * <pre class="code">
+     *
+     * <p><pre class="code">
      *   Asserts.instanceOf(Foo.class, foo);
      * </pre>
      *
@@ -356,8 +361,8 @@ public class Asserts {
 
     /**
      * 断言给定对象是否是给定类的实例
-     * <p>
-     * <pre class="code">
+     *
+     * <p><pre class="code">
      *   Asserts.instanceOf(Foo.class, foo, "foo must be an instance of class Foo");
      * </pre>
      *
@@ -370,7 +375,8 @@ public class Asserts {
      * @throws IllegalArgumentException if the object is not an instance of clazz
      * @see Class#isInstance(Object)
      */
-    public static <T> T isInstanceOf(@Nullable Class<?> type, T obj, String errorMsgTemplate, Object... params) throws IllegalArgumentException {
+    public static <T> T isInstanceOf(@Nullable Class<?> type, T obj, String errorMsgTemplate, Object... params)
+            throws IllegalArgumentException {
         notNull(type, "Type to check against must not be null");
         if (!type.isInstance(obj)) {
             throw new IllegalArgumentException(StrUtil.format(errorMsgTemplate, params));
@@ -380,8 +386,8 @@ public class Asserts {
 
     /**
      * 断言 {@code superType.isAssignableFrom(subType)} 是否为 {@code true}.
-     * <p>
-     * <pre class="code">
+     *
+     * <p><pre class="code">
      *   Asserts.isAssignable(Number.class, myClass);
      * </pre>
      *
@@ -389,14 +395,15 @@ public class Asserts {
      * @param subType   需要检查的子类
      * @throws IllegalArgumentException 如果子类非继承父类，抛出此异常
      */
-    public static void isAssignable(@Nullable Class<?> superType, @Nullable Class<?> subType) throws IllegalArgumentException {
+    public static void isAssignable(@Nullable Class<?> superType, @Nullable Class<?> subType)
+            throws IllegalArgumentException {
         isAssignable(superType, subType, "{} is not assignable to {})", subType, superType);
     }
 
     /**
      * 断言 {@code superType.isAssignableFrom(subType)} 是否为 {@code true}.
-     * <p>
-     * <pre class="code">
+     *
+     * <p><pre class="code">
      *   Asserts.isAssignable(Number.class, myClass, "myClass must can be assignable to class Number");
      * </pre>
      *
@@ -442,7 +449,8 @@ public class Asserts {
                                                                     N max,
                                                                     String errorMsgTemplate,
                                                                     Object... params) {
-        return checkBetween(value, min, max, () -> new IllegalArgumentException(StrUtil.format(errorMsgTemplate, params)));
+        return checkBetween(value, min, max,
+                () -> new IllegalArgumentException(StrUtil.format(errorMsgTemplate, params)));
     }
 
     /**
@@ -456,6 +464,7 @@ public class Asserts {
      * @return 经过检查后的值
      * @throws X if value is out of bound
      */
+    @SuppressWarnings("checkstyle:Indentation")
     public static <X extends Throwable, N extends Number & Comparable<N>>
     N checkBetween(N value, N min, N max, Supplier<? extends X> errorSupplier) throws X {
         if (value.compareTo(min) < 0 || value.compareTo(max) > 0) {

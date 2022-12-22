@@ -182,8 +182,8 @@ public abstract class StrUtils implements InvisibleStrs, AsciiAlphaNumericStrs,
 
     /**
      * 将字符串中间出现的多个空白替换为一个空格
-     * <p>
-     * 示例：
+     *
+     * <p>示例：
      * <pre>
      *     replaceAllWhiteSpacesToOneSpace("12  2        3     4") ==>  "12 2 3 4"
      *     replaceAllWhiteSpacesToOneSpace("   12  2     3   4  ") ==>  " 12 2 3 4 "
@@ -218,14 +218,14 @@ public abstract class StrUtils implements InvisibleStrs, AsciiAlphaNumericStrs,
      * @return 已脱敏的字符串
      */
     @SuppressWarnings("AlibabaUndefineMagicConstant")
-    public static String partiallyDesensitize(String str, int maxExposedPartLen) {
+    public static String partiallyDesensitize(final String str, final int maxExposedPartLen) {
         if (StrUtil.isBlank(str)) {
             return str;
         }
 
         int strLen = str.length();
-        maxExposedPartLen = Math.max(maxExposedPartLen, 0);
-        int exposedPartLen = Math.min(strLen / 2, maxExposedPartLen);
+        int newMaxExposedPartLen = Math.max(maxExposedPartLen, 0);
+        int exposedPartLen = Math.min(strLen / 2, newMaxExposedPartLen);
 
         int desensitizedPartLen = strLen - exposedPartLen;
         String desensitizedPart = StrUtil.repeat(StrUtils.ASTERISK, desensitizedPartLen);
@@ -262,6 +262,7 @@ public abstract class StrUtils implements InvisibleStrs, AsciiAlphaNumericStrs,
      * @param str 待计算长度的字符串
      * @return 包含汉字的字符串长度
      */
+    @SuppressWarnings("checkstyle:AvoidEscapedUnicodeCharacters")
     public static int lenOfHansStr(String str) {
         int valueLength = 0;
         String chinese = "[\u0391-\uFFE5]";
@@ -293,14 +294,15 @@ public abstract class StrUtils implements InvisibleStrs, AsciiAlphaNumericStrs,
      * @param delimiters 分隔符变长数组
      * @return 去除字符串中指定的分隔符两边的空白之后的字符串
      */
-    public static String removeWhiteSpacesAroundDelimiters(String str, String... delimiters) {
+    public static String removeWhiteSpacesAroundDelimiters(final String str, final String... delimiters) {
+        String tempStr = str;
         for (String delimiter : delimiters) {
-            if (str.contains(delimiter)) {
+            if (tempStr.contains(delimiter)) {
                 String regex = StrUtil.wrap(ReUtil.escape(delimiter), REGEX_ZERO_OR_MORE_WHITE_SPACES);
-                str = str.replaceAll(regex, delimiter);
+                tempStr = tempStr.replaceAll(regex, delimiter);
             }
         }
-        return str;
+        return tempStr;
     }
 
     /**
@@ -311,7 +313,9 @@ public abstract class StrUtils implements InvisibleStrs, AsciiAlphaNumericStrs,
      * @param predicate 字符串判断条件
      * @return 补充后的字符串
      */
-    public static String addPrefixIfPredicateSatisfied(CharSequence str, CharSequence prefix, Predicate<CharSequence> predicate) {
+    public static String addPrefixIfPredicateSatisfied(CharSequence str,
+                                                       CharSequence prefix,
+                                                       Predicate<CharSequence> predicate) {
         if (predicate.test(str)) {
             return StrUtil.format("{}{}", prefix, str);
         } else {
@@ -327,7 +331,9 @@ public abstract class StrUtils implements InvisibleStrs, AsciiAlphaNumericStrs,
      * @param predicate 字符串判断条件
      * @return 补充后的字符串
      */
-    public static String addSuffixIfPredicateSatisfied(CharSequence str, CharSequence suffix, Predicate<CharSequence> predicate) {
+    public static String addSuffixIfPredicateSatisfied(CharSequence str,
+                                                       CharSequence suffix,
+                                                       Predicate<CharSequence> predicate) {
         if (predicate.test(str)) {
             return StrUtil.format("{}{}", str, suffix);
         } else {

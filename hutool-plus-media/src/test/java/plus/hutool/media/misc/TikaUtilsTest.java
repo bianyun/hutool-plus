@@ -6,6 +6,7 @@ import org.apache.commons.io.input.BrokenInputStream;
 import org.apache.commons.io.input.NullInputStream;
 import org.apache.tika.exception.ZeroByteFileException;
 import org.junit.jupiter.api.Test;
+import plus.hutool.media.exception.TikaParseException;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -138,8 +139,8 @@ class TikaUtilsTest {
     @Test
     void testParseToString3_EmptyStream() {
         assertThatThrownBy(() -> TikaUtils.parseToString(new NullInputStream()))
-                .isInstanceOf(RuntimeException.class)
-                .hasMessage("文档解析出错")
+                .isExactlyInstanceOf(TikaParseException.class)
+                .hasMessage("Tika 解析文档出错")
                 .hasCauseInstanceOf(ZeroByteFileException.class)
                 .hasRootCauseMessage("InputStream must have > 0 bytes");
     }

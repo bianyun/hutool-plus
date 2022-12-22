@@ -27,7 +27,6 @@ import static plus.hutool.core.math.NumberUtils.resolveApproximateValue;
  */
 @SuppressWarnings({"JavadocDeclaration", "AlibabaAbstractClassShouldStartWithAbstractNaming"})
 public abstract class FileSizeUtils {
-    private FileSizeUtils() {}
 
     public static final int FILE_SIZE_CONVERSION_FACTOR = 1024;
 
@@ -47,6 +46,57 @@ public abstract class FileSizeUtils {
             CollUtils.unmodifiableList(BYTE, KB, MB, GB, TB, PB, EB, ZB, YB);
     private static final String[] FILE_SIZE_UNIT_SYMBOL_ARRAY =
             FILE_SIZE_UNIT_LIST.stream().map(Unit::getSymbol).toArray(String[]::new);
+
+    private FileSizeUtils() {
+    }
+
+    /**
+     * 文件大小换算
+     *
+     * @param val        文件大小的值
+     * @param srcUnit    换算来源文件大小的单位
+     * @param targetUnit 换算目标文件大小的单位
+     * @return 换算后的文件大小
+     */
+    public static Quantity<FileSize> convertFileSize(Number val, Unit<FileSize> srcUnit, Unit<FileSize> targetUnit) {
+        Quantity<FileSize> quantity = Quantities.getQuantity(val, srcUnit);
+        return assureConvertedBytesValueIsIntegral(quantity.to(targetUnit));
+    }
+
+    /**
+     * 文件大小换算
+     *
+     * @param val        文件大小的值
+     * @param srcUnit    换算来源文件大小的单位
+     * @param targetUnit 换算目标文件大小的单位
+     * @return 换算后的文件大小字符串
+     */
+    public static String convertFileSizeToStr(Number val, Unit<FileSize> srcUnit, Unit<FileSize> targetUnit) {
+        Quantity<FileSize> quantity = convertFileSize(val, srcUnit, targetUnit);
+        String valueStr = NumberUtils.resolveApproximateValueAsStr(quantity.getValue(), 2, 4, true);
+        return String.join(StrUtils.SPACE, valueStr, quantity.getUnit().getSymbol());
+    }
+
+    /**
+     * 将文件大小的数值转换为指定的单位
+     *
+     * @param value      文件大小的数值
+     * @param srcUnit    源单位
+     * @param targetUnit 目标单位
+     * @param scale      小数点位数
+     * @return 单位转换后的数值
+     */
+    public static Number convertFileSizeValueToSpecifiedUnit(long value,
+                                                             Unit<FileSize> srcUnit,
+                                                             Unit<FileSize> targetUnit,
+                                                             int scale) {
+        if (Objects.equals(srcUnit, targetUnit)) {
+            return value;
+        }
+
+        Number convertedValue = Quantities.getQuantity(value, srcUnit).to(targetUnit).getValue();
+        return resolveApproximateValue(convertedValue, scale, scale);
+    }
 
     /**
      * 获取完整的 文件大小单位列表
@@ -86,71 +136,6 @@ public abstract class FileSizeUtils {
     }
 
     /**
-     * 根据字节数解析出最合适的文件大小单位
-     *
-     * @param bytes 字节数
-     * @return 类型为 {@code Unit<FileSize>} 的文件大小单位
-     */
-    public static Unit<FileSize> resolveAppropriateFileSizeUnitFromBytes(Number bytes) {
-        int bitLen = NumberUtils.getAbsBitLength(bytes);
-        int listSize = FILE_SIZE_UNIT_LIST.size();
-        int index = Math.min((bitLen - 1) / 10, listSize - 1);
-        return FILE_SIZE_UNIT_LIST.get(index);
-    }
-
-    /**
-     * 根据字节数解析出最合适的文件大小单位的符号
-     *
-     * @param bytes 字节数
-     * @return 文件大小单位的符号（B, KB, MB, GB, TB, PB, EB, ZB, YB）
-     */
-    public static String resolveAppropriateFileSizeUnitSymbolFromBytes(Number bytes) {
-        return resolveAppropriateFileSizeUnitFromBytes(bytes).getSymbol();
-    }
-
-    /**
-     * 获取单位规范化后的文件大小（用字符串数组表示，第一个元素为值，第二个元素为单位）
-     * <p>
-     * 转换示例如下：
-     * </p>
-     * <pre>
-     *     normalizeFileSizeToStrArray(123456789, FileSizeUnitDef.KB) ==> ["117.74", "GB"]
-     *     normalizeFileSizeToStrArray(123.45678, FileSizeUnitDef.MB) ==> ["123.46", "MB"]
-     *     normalizeFileSizeToStrArray(0.0123456, FileSizeUnitDef.PB) ==> ["12.64", "TB"]
-     *     normalizeFileSizeToStrArray(0.0123456, FileSizeUnitDef.KB) ==> ["13", "B"]
-     * </pre>
-     *
-     * @param val  文件大小的值
-     * @param unit 文件大小的单位
-     * @return 单位规范化后的文件大小（用字符串数组表示，第一个元素为值，第二个元素为单位）
-     */
-    public static String[] normalizeFileSizeToStrArray(Number val, Unit<FileSize> unit) {
-        Quantity<FileSize> quantity = normalizeFileSize(val, unit);
-        String appropriateValue = NumberUtils.resolveApproximateValueAsStr(quantity.getValue(), 2, 4, true);
-        return new String[]{appropriateValue, quantity.getUnit().getSymbol()};
-    }
-
-    /**
-     * 获取单位规范化后的文件大小（用字符串表示: 值 单位）
-     * <p>
-     * 转换示例如下：
-     * </p>
-     * <pre>
-     *     normalizeFileSizeToStr(123456789, FileSizeUnitDef.KB) ==> "117.74 GB"
-     *     normalizeFileSizeToStr(123.45678, FileSizeUnitDef.MB) ==> "123.46 MB"
-     *     normalizeFileSizeToStr(0.0123456, FileSizeUnitDef.PB) ==> "12.64 TB"
-     *     normalizeFileSizeToStr(0.0123456, FileSizeUnitDef.KB) ==> "13 B"
-     * </pre>
-     *
-     * @param val  文件大小的值
-     * @param unit 文件大小的单位
-     * @return 单位规范化后的文件大小（用字符串表示: 值 单位）
-     */
-    public static String normalizeFileSizeToStr(Number val, Unit<FileSize> unit) {
-        return ArrayUtil.join(normalizeFileSizeToStrArray(val, unit), StrUtils.SPACE);
-    }
-
-    /**
      * 获取单位规范化后的文件大小
      *
      * @param val  文件大小的值
@@ -176,7 +161,8 @@ public abstract class FileSizeUtils {
             for (int i = index - 1; i >= 0; i--) {
                 Unit<FileSize> candidateUnit = unitList.get(i);
                 result = result.to(candidateUnit);
-                if (NumberUtils.isBetweenLeftClosedRightOpenInterval(result.getValue(), 1, FILE_SIZE_CONVERSION_FACTOR)) {
+                if (NumberUtils.isBetweenLeftClosedRightOpenInterval(
+                        result.getValue(), 1, FILE_SIZE_CONVERSION_FACTOR)) {
                     break;
                 }
             }
@@ -184,7 +170,8 @@ public abstract class FileSizeUtils {
             for (int i = index + 1; i < unitList.size(); i++) {
                 Unit<FileSize> candidateUnit = unitList.get(i);
                 result = result.to(candidateUnit);
-                if (NumberUtils.isBetweenLeftClosedRightOpenInterval(result.getValue(), 1, FILE_SIZE_CONVERSION_FACTOR)) {
+                if (NumberUtils.isBetweenLeftClosedRightOpenInterval(
+                        result.getValue(), 1, FILE_SIZE_CONVERSION_FACTOR)) {
                     break;
                 }
             }
@@ -194,52 +181,68 @@ public abstract class FileSizeUtils {
     }
 
     /**
-     * 文件大小换算
+     * 获取单位规范化后的文件大小（用字符串表示: 值 单位）
+     * <p>
+     * 转换示例如下：
+     * </p>
+     * <pre>
+     *     normalizeFileSizeToStr(123456789, FileSizeUnitDef.KB) ==> "117.74 GB"
+     *     normalizeFileSizeToStr(123.45678, FileSizeUnitDef.MB) ==> "123.46 MB"
+     *     normalizeFileSizeToStr(0.0123456, FileSizeUnitDef.PB) ==> "12.64 TB"
+     *     normalizeFileSizeToStr(0.0123456, FileSizeUnitDef.KB) ==> "13 B"
+     * </pre>
      *
-     * @param val        文件大小的值
-     * @param srcUnit    换算来源文件大小的单位
-     * @param targetUnit 换算目标文件大小的单位
-     * @return 换算后的文件大小
+     * @param val  文件大小的值
+     * @param unit 文件大小的单位
+     * @return 单位规范化后的文件大小（用字符串表示: 值 单位）
      */
-    public static Quantity<FileSize> convertFileSize(Number val, Unit<FileSize> srcUnit, Unit<FileSize> targetUnit) {
-        Quantity<FileSize> quantity = Quantities.getQuantity(val, srcUnit);
-        return assureConvertedBytesValueIsIntegral(quantity.to(targetUnit));
+    public static String normalizeFileSizeToStr(Number val, Unit<FileSize> unit) {
+        return ArrayUtil.join(normalizeFileSizeToStrArray(val, unit), StrUtils.SPACE);
     }
 
     /**
-     * 将文件大小的数值转换为指定的单位
+     * 获取单位规范化后的文件大小（用字符串数组表示，第一个元素为值，第二个元素为单位）
+     * <p>
+     * 转换示例如下：
+     * </p>
+     * <pre>
+     *     normalizeFileSizeToStrArray(123456789, FileSizeUnitDef.KB) ==> ["117.74", "GB"]
+     *     normalizeFileSizeToStrArray(123.45678, FileSizeUnitDef.MB) ==> ["123.46", "MB"]
+     *     normalizeFileSizeToStrArray(0.0123456, FileSizeUnitDef.PB) ==> ["12.64", "TB"]
+     *     normalizeFileSizeToStrArray(0.0123456, FileSizeUnitDef.KB) ==> ["13", "B"]
+     * </pre>
      *
-     * @param value      文件大小的数值
-     * @param srcUnit    源单位
-     * @param targetUnit 目标单位
-     * @param scale      小数点位数
-     * @return 单位转换后的数值
+     * @param val  文件大小的值
+     * @param unit 文件大小的单位
+     * @return 单位规范化后的文件大小（用字符串数组表示，第一个元素为值，第二个元素为单位）
      */
-    public static Number convertFileSizeValueToSpecifiedUnit(long value,
-                                                             Unit<FileSize> srcUnit,
-                                                             Unit<FileSize> targetUnit,
-                                                             int scale) {
-        if (Objects.equals(srcUnit, targetUnit)) {
-            return value;
-        }
-
-        Number convertedValue = Quantities.getQuantity(value, srcUnit).to(targetUnit).getValue();
-        return resolveApproximateValue(convertedValue, scale, scale);
+    public static String[] normalizeFileSizeToStrArray(Number val, Unit<FileSize> unit) {
+        Quantity<FileSize> quantity = normalizeFileSize(val, unit);
+        String appropriateValue = NumberUtils.resolveApproximateValueAsStr(quantity.getValue(), 2, 4, true);
+        return new String[]{appropriateValue, quantity.getUnit().getSymbol()};
     }
 
+    /**
+     * 根据字节数解析出最合适的文件大小单位
+     *
+     * @param bytes 字节数
+     * @return 类型为 {@code Unit<FileSize>} 的文件大小单位
+     */
+    public static Unit<FileSize> resolveAppropriateFileSizeUnitFromBytes(Number bytes) {
+        int bitLen = NumberUtils.getAbsBitLength(bytes);
+        int listSize = FILE_SIZE_UNIT_LIST.size();
+        int index = Math.min((bitLen - 1) / 10, listSize - 1);
+        return FILE_SIZE_UNIT_LIST.get(index);
+    }
 
     /**
-     * 文件大小换算
+     * 根据字节数解析出最合适的文件大小单位的符号
      *
-     * @param val        文件大小的值
-     * @param srcUnit    换算来源文件大小的单位
-     * @param targetUnit 换算目标文件大小的单位
-     * @return 换算后的文件大小字符串
+     * @param bytes 字节数
+     * @return 文件大小单位的符号（B, KB, MB, GB, TB, PB, EB, ZB, YB）
      */
-    public static String convertFileSizeToStr(Number val, Unit<FileSize> srcUnit, Unit<FileSize> targetUnit) {
-        Quantity<FileSize> quantity = convertFileSize(val, srcUnit, targetUnit);
-        String valueStr = NumberUtils.resolveApproximateValueAsStr(quantity.getValue(), 2, 4, true);
-        return String.join(StrUtils.SPACE, valueStr, quantity.getUnit().getSymbol());
+    public static String resolveAppropriateFileSizeUnitSymbolFromBytes(Number bytes) {
+        return resolveAppropriateFileSizeUnitFromBytes(bytes).getSymbol();
     }
 
     /**

@@ -11,19 +11,36 @@ import plus.hutool.core.text.string.StrUtils;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
-import java.time.*;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.OffsetDateTime;
+import java.time.YearMonth;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalQuery;
 import java.time.temporal.UnsupportedTemporalTypeException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static cn.hutool.core.text.StrPool.*;
+import static plus.hutool.core.text.string.StrUtils.COLON;
+import static plus.hutool.core.text.string.StrUtils.DASH;
+import static plus.hutool.core.text.string.StrUtils.DOT;
+import static plus.hutool.core.text.string.StrUtils.SLASH;
+
+
+// import static cn.hutool.core.text.StrPool.*;
 
 /**
  * 日期时间工具类
@@ -33,7 +50,6 @@ import static cn.hutool.core.text.StrPool.*;
  */
 @SuppressWarnings({"unused", "JavadocDeclaration", "AlibabaAbstractClassShouldStartWithAbstractNaming"})
 public abstract class DateTimeUtils {
-    private DateTimeUtils() {}
 
     public static final long HOURS_PER_DAY = TimeUnit.DAYS.toHours(1);
     public static final long MINUTES_PER_DAY = TimeUnit.DAYS.toMinutes(1);
@@ -128,6 +144,9 @@ public abstract class DateTimeUtils {
         };
     }
 
+    private DateTimeUtils() {
+    }
+
     /**
      * 将 {@link ChronoUnit} 为单位的持续时间转换为 {@link Duration} 格式
      *
@@ -165,18 +184,23 @@ public abstract class DateTimeUtils {
      * @param fixedDecimalLength 是否固定小数位数的长度
      * @return 其它单位的持续时间（字符串表示的数值）
      */
-    public static String convertDuration(Duration duration, ChronoUnit targetUnit, int scale, boolean fixedDecimalLength) {
+    public static String convertDuration(Duration duration,
+                                         ChronoUnit targetUnit,
+                                         final int scale,
+                                         boolean fixedDecimalLength) {
         long nanos = duration.toNanos();
         long nanosPerUnit = convertChronoUnitToDuration(1, targetUnit).toNanos();
 
+        int newScale = scale;
         if (!fixedDecimalLength && (nanos % nanosPerUnit == 0)) {
-            scale = 0;
+            newScale = 0;
         }
 
-        BigDecimal val = BigDecimal.valueOf(nanos).divide(BigDecimal.valueOf(nanosPerUnit), scale, RoundingMode.HALF_UP);
+        BigDecimal val = BigDecimal.valueOf(nanos)
+                .divide(BigDecimal.valueOf(nanosPerUnit), newScale, RoundingMode.HALF_UP);
 
         boolean cleanUnnecessaryZeros = !fixedDecimalLength;
-        return NumberUtils.resolveApproximateValueAsStr(val, scale, scale, cleanUnnecessaryZeros);
+        return NumberUtils.resolveApproximateValueAsStr(val, newScale, newScale, cleanUnnecessaryZeros);
     }
 
     /**
@@ -205,8 +229,20 @@ public abstract class DateTimeUtils {
             return null;
         }
         LocalDate localDate = DateTimeUtils.parseLocalDate(dateStr);
-        dateStr = DateTimeFormatter.BASIC_ISO_DATE.format(localDate);
-        return Integer.valueOf(dateStr);
+        String basicIsoDateStr = DateTimeFormatter.BASIC_ISO_DATE.format(localDate);
+        return Integer.valueOf(basicIsoDateStr);
+    }
+
+    /**
+     * 将 {@link Duration} 的精度调小为 毫秒级（即：丢失其包含的纳秒级的数值）
+     *
+     * @param duration {@link Duration} 格式的持续时间
+     * @return 精度调小为毫秒级之后的 {@link Duration} 格式的持续时间
+     */
+    public static Duration downPrecisionToMillis(Duration duration) {
+        long secs = duration.getSeconds();
+        long nanos = 1000_000 * Math.round(1.0 * duration.getNano() / 1000_000);
+        return Duration.ofSeconds(secs, nanos);
     }
 
     /**
@@ -226,18 +262,18 @@ public abstract class DateTimeUtils {
      * @param fixedSecondsScaleToThree 是否将秒数的小数部分长度固定为 3
      * @return 更易读的时间格式
      */
-    public static String durationToMoreReadableFormat(Duration duration, boolean fixedSecondsScaleToThree) {
-        duration = downPrecisionToMillis(duration);
+    public static String durationToMoreReadableFormat(final Duration duration, boolean fixedSecondsScaleToThree) {
+        Duration newDuration = downPrecisionToMillis(duration);
 
-        String formatOfIso8601 = duration.toString().substring(2);
+        String formatOfIso8601 = newDuration.toString().substring(2);
 
-        if (formatOfIso8601.contains(StrUtils.UPPERCASE_LETTER_H) &&
-                !formatOfIso8601.contains(StrUtils.UPPERCASE_LETTER_M)) {
+        if (formatOfIso8601.contains(StrUtils.UPPERCASE_LETTER_H)
+                && !formatOfIso8601.contains(StrUtils.UPPERCASE_LETTER_M)) {
             formatOfIso8601 = StrUtil.replace(formatOfIso8601, StrUtils.UPPERCASE_LETTER_H, "H0M");
         }
 
-        if (formatOfIso8601.contains(StrUtils.UPPERCASE_LETTER_M) &&
-                !formatOfIso8601.contains(StrUtils.UPPERCASE_LETTER_S)) {
+        if (formatOfIso8601.contains(StrUtils.UPPERCASE_LETTER_M)
+                && !formatOfIso8601.contains(StrUtils.UPPERCASE_LETTER_S)) {
             formatOfIso8601 = StrUtil.replace(formatOfIso8601, StrUtils.UPPERCASE_LETTER_M, "M0S");
         }
 
@@ -262,18 +298,6 @@ public abstract class DateTimeUtils {
         }
         result = result.replaceAll("(\\d[HMS])(?!$)", "$1 ").toLowerCase();
         return result;
-    }
-
-    /**
-     * 将 {@link Duration} 的精度调小为 毫秒级（即：丢失其包含的纳秒级的数值）
-     *
-     * @param duration {@link Duration} 格式的持续时间
-     * @return 精度调小为毫秒级之后的 {@link Duration} 格式的持续时间
-     */
-    public static Duration downPrecisionToMillis(Duration duration) {
-        long secs = duration.getSeconds();
-        long nanos = 1000_000 * Math.round(1.0 * duration.getNano() / 1000_000);
-        return Duration.ofSeconds(secs, nanos);
     }
 
     /**
@@ -473,6 +497,26 @@ public abstract class DateTimeUtils {
     public static String nanosToMoreReadableFormat(long nanoseconds, boolean fixedSecondsScaleToThree) {
         long milliseconds = TimeUnit.NANOSECONDS.toMillis(nanoseconds);
         return millisToMoreReadableFormat(milliseconds, fixedSecondsScaleToThree);
+    }
+
+    /**
+     * 获取当前时刻的日期时间字符串
+     *
+     * @return 当前时刻的日期时间字符串
+     */
+    public static String now() {
+        return now(false);
+    }
+
+    /**
+     * 获取当前时刻的日期时间字符串
+     *
+     * @param withMillis 是否带上毫秒
+     * @return 当前时刻的日期时间字符串
+     */
+    public static String now(boolean withMillis) {
+        String pattern = withMillis ? "yyyy-MM-dd HH:mm:ss.SSS" : "yyyy-MM-dd HH:mm:ss";
+        return LocalDateTime.now().format(fromPattern(pattern));
     }
 
     /**
@@ -716,7 +760,7 @@ public abstract class DateTimeUtils {
         int startIndexOfAdjustStepSize = totalDays % splitsNum - 1;
 
         int i = 0;
-        for (LocalDate beginDateOfSplit = beginDate, endDateOfSplit = beginDateOfSplit.plusDays(stepDays);; i++) {
+        for (LocalDate beginDateOfSplit = beginDate, endDateOfSplit = beginDateOfSplit.plusDays(stepDays); ; i++) {
             if (i == startIndexOfAdjustStepSize) {
                 stepDays -= 1;
             }
@@ -786,17 +830,19 @@ public abstract class DateTimeUtils {
      * @return 字符串格式的日期
      */
     @Nullable
-    public static String toLocalDateStr(@Nullable Integer dateAsInteger, @Nullable String outputPattern) {
+    public static String toLocalDateStr(@Nullable final Integer dateAsInteger, @Nullable final String outputPattern) {
         if (dateAsInteger == null) {
             return null;
         }
 
         LocalDate localDate = parseLocalDate(dateAsInteger);
-        if (StrUtil.isBlank(outputPattern)) {
-            outputPattern = "yyyyMMdd";
+
+        String newOutputPattern = outputPattern;
+        if (StrUtil.isBlank(newOutputPattern)) {
+            newOutputPattern = "yyyyMMdd";
         }
 
-        return localDate.format(fromPattern(outputPattern));
+        return localDate.format(fromPattern(newOutputPattern));
     }
 
     /**
@@ -811,6 +857,15 @@ public abstract class DateTimeUtils {
     }
 
     /**
+     * 获取今天的日期字符串
+     *
+     * @return 今天的日期字符串
+     */
+    public static String today() {
+        return LocalDate.now().format(fromPattern("yyyy-MM-dd"));
+    }
+
+    /**
      * 将 {@link YearMonth} 转换为整数（格式为 yyyyMM）
      *
      * @param yearMonth 年月
@@ -821,42 +876,14 @@ public abstract class DateTimeUtils {
         return Integer.parseInt(yearMonthStr);
     }
 
-    /**
-     * 获取当前时刻的日期时间字符串
-     *
-     * @return 当前时刻的日期时间字符串
-     */
-    public static String now() {
-        return now(false);
-    }
-
-    /**
-     * 获取当前时刻的日期时间字符串
-     *
-     * @param withMillis 是否带上毫秒
-     * @return 当前时刻的日期时间字符串
-     */
-    public static String now(boolean withMillis) {
-        String pattern = withMillis ? "yyyy-MM-dd HH:mm:ss.SSS" : "yyyy-MM-dd HH:mm:ss";
-        return LocalDateTime.now().format(fromPattern(pattern));
-    }
-
-    /**
-     * 获取今天的日期字符串
-     *
-     * @return 今天的日期字符串
-     */
-    public static String today() {
-        return LocalDate.now().format(fromPattern("yyyy-MM-dd"));
-    }
-
-    private static <T> T doParse(String type, String str, DateTimeFormatter[] candidateFormatters, TemporalQuery<T> query) {
+    private static <T> T doParse(String type, String str, DateTimeFormatter[] candidateFormatters,
+                                 TemporalQuery<T> query) {
         if (StrUtil.isBlank(str)) {
             throw ExceptionUtils.dateTimeParseException("{}字符串不能为空", type);
         }
 
         String cleanedStr = StrUtils.replaceAllWhiteSpacesToOneSpace(str.trim());
-        cleanedStr = StrUtils.removeWhiteSpacesAroundDelimiters(cleanedStr, DASHED, SLASH, DOT, COLON);
+        cleanedStr = StrUtils.removeWhiteSpacesAroundDelimiters(cleanedStr, DASH, SLASH, DOT, COLON);
 
         for (DateTimeFormatter formatter : candidateFormatters) {
             try {

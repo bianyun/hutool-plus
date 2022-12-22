@@ -34,6 +34,13 @@ public class LocalDateRange implements Serializable {
         return new LocalDateRange(beginDate, endDate);
     }
 
+    /**
+     * 根据起止日期字符串创建日期范围对象
+     *
+     * @param beginDateStr 起始日期
+     * @param endDateStr   结束日期
+     * @return 日期范围对象
+     */
     public static LocalDateRange of(String beginDateStr, String endDateStr) {
         LocalDate beginDate = DateTimeUtils.parseLocalDate(beginDateStr);
         LocalDate endDate = DateTimeUtils.parseLocalDate(endDateStr);
@@ -45,8 +52,8 @@ public class LocalDateRange implements Serializable {
     }
 
     public boolean containsDateRange(LocalDateRange dateRange) {
-        return !this.beginDate.isAfter(dateRange.getBeginDate()) &&
-                !this.endDate.isBefore(dateRange.getEndDate());
+        return !this.beginDate.isAfter(dateRange.getBeginDate())
+                && !this.endDate.isBefore(dateRange.getEndDate());
     }
 
     @Override

@@ -6,7 +6,12 @@ import lombok.Data;
 import org.springframework.lang.Nullable;
 import plus.hutool.core.iterable.collection.CollUtils;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import static plus.hutool.media.misc.MediaType.Value.*;
 
@@ -17,7 +22,7 @@ import static plus.hutool.media.misc.MediaType.Value.*;
  * @author bianyun
  * @date 2022/12/9
  */
-@SuppressWarnings({"unused", "JavadocDeclaration"})
+@SuppressWarnings({"unused", "JavadocDeclaration", "checkstyle:LineLength"})
 @Data
 public class MediaType {
 
@@ -387,12 +392,20 @@ public class MediaType {
         this.fileExtensionList = fileExtensionList;
     }
 
+    /**
+     * 根据 类型、子类型、文件名后缀 创建媒体类型 {@link MediaType} 对象
+     *
+     * @param type           类型
+     * @param subtype        子类型
+     * @param fileExtensions 文件名后缀（变长参数）
+     * @return 媒体类型 {@link MediaType} 对象
+     */
     public static MediaType of(String type, String subtype, String... fileExtensions) {
         String fullType = StrUtil.format("{}/{}", type.toLowerCase(), subtype.toLowerCase());
         MediaType result = LOCAL_CACHE.get(fullType);
         if (!LOCAL_CACHE.containsKey(fullType)) {
-            List<String> fileExtensionList = fileExtensions.length == 0 ?
-                    Collections.emptyList() : CollUtils.unmodifiableList(true, fileExtensions);
+            List<String> fileExtensionList = fileExtensions.length == 0
+                    ? Collections.emptyList() : CollUtils.unmodifiableList(true, fileExtensions);
             result = new MediaType(type, subtype, fileExtensionList);
             LOCAL_CACHE.putIfAbsent(fullType, result);
 
@@ -409,14 +422,6 @@ public class MediaType {
         return result;
     }
 
-    public String getType() {
-        return type;
-    }
-
-    public String getSubtype() {
-        return subtype;
-    }
-
     @Nullable
     public String getDefaultFileExtension() {
         return getFileExtensionList().isEmpty() ? null : getFileExtensionList().get(0);
@@ -426,9 +431,14 @@ public class MediaType {
         return fileExtensionList;
     }
 
+    /**
+     * 根据文件名后缀获取唯一对应的媒体类型 {@link MediaType} 对象
+     *
+     * @param fileExtension 文件名后缀
+     * @return 媒体类型 {@link MediaType} 对象
+     */
     @Nullable
     public static MediaType getOneByFileExtension(String fileExtension) {
-        fileExtension = fileExtension.toLowerCase();
         Set<MediaType> mediaTypes = FILE_EXTENSION_TO_MEDIA_TYPES_MAP.get(fileExtension.toLowerCase());
         if (mediaTypes != null && mediaTypes.size() == 1) {
             return CollUtil.getFirst(mediaTypes);
@@ -466,6 +476,9 @@ public class MediaType {
         return StrUtil.format("{}/{}", getType(), getSubtype());
     }
 
+    /**
+     * 媒体类型用到的字符串常量定义
+     */
     @SuppressWarnings("SpellCheckingInspection")
     public static class Value {
         /* Media Type constants */
