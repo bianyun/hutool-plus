@@ -1,5 +1,6 @@
 # Hutool Plus
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/928136434ae8482281ec7b4eba172fc1)](https://app.codacy.com/gh/bianyun/hutool-plus?utm_source=github.com&utm_medium=referral&utm_content=bianyun/hutool-plus&utm_campaign=Badge_Grade_Settings)
 [![CI Build](https://github.com/bianyun/hutool-plus/actions/workflows/gradle.yml/badge.svg)](https://github.com/bianyun/hutool-plus/actions/workflows/gradle.yml)
 [![codecov](https://codecov.io/gh/bianyun/hutool-plus/branch/main/graph/badge.svg?token=CB4O9XUD21)](https://codecov.io/gh/bianyun/hutool-plus)
 
