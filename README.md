@@ -2,6 +2,7 @@
 
 [![CI Build](https://github.com/bianyun/hutool-plus/actions/workflows/gradle.yml/badge.svg)](https://github.com/bianyun/hutool-plus/actions/workflows/gradle.yml)
 [![codecov](https://codecov.io/gh/bianyun/hutool-plus/branch/main/graph/badge.svg?token=CB4O9XUD21)](https://codecov.io/gh/bianyun/hutool-plus)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/38b548f4494c4bd4940a1b0505e3e3d3)](https://www.codacy.com/gh/bianyun/hutool-plus/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=bianyun/hutool-plus&amp;utm_campaign=Badge_Grade)
 
 ## 简介
 
