@@ -6,7 +6,6 @@ import cn.hutool.core.date.StopWatch.TaskInfo;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.CharUtil;
 import cn.hutool.core.util.StrUtil;
-import lombok.Value;
 import org.springframework.lang.Nullable;
 import plus.hutool.core.lang.Asserts;
 import plus.hutool.core.math.NumberUtils;
@@ -354,7 +353,7 @@ public abstract class StopWatchUtils {
         return resultList;
     }
 
-    @Value(staticConstructor = "of")
+    @lombok.Value(staticConstructor = "of")
     public static class TaskFilter {
         Predicate<String> taskNamePredicate;
         Function<Long, String> taskMillisToMetricFunc;

@@ -27,8 +27,7 @@ public abstract class DocumentConvertUtils {
     private static final int DEFAULT_PROCESS_TIMEOUT_SECONDS = 30;
     private static final int MAX_PROCESS_TIMEOUT_SECONDS = 1800;
 
-    private DocumentConvertUtils() {
-    }
+    private DocumentConvertUtils() {}
 
     public static File convert(Path path, DocumentType srcDocType, DocumentType targetDocType) {
         return convert(path.toFile(), srcDocType, targetDocType, DEFAULT_PROCESS_TIMEOUT_SECONDS);

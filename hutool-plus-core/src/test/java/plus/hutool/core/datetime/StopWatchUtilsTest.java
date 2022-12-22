@@ -43,6 +43,11 @@ class StopWatchUtilsTest {
             taskMillis -> StrUtil.format("{}ms / MB", Math.round(taskMillis * 1.0 / TOTAL_FILE_SIZE_IN_MEGA_BYTES))
     );
 
+    private static final TaskFilter INVALID_FILTER = TaskFilter.of(
+            taskName -> taskName.contains("Invalid Task Name"),
+            taskMillis -> StrUtil.format("{}", taskMillis)
+    );
+
     @Test
     void testGetMoreReadableSummaryTime() {
         final StopWatch sw = mock(StopWatch.class);
@@ -93,13 +98,21 @@ class StopWatchUtilsTest {
         assertThat(result2.get(1)).startsWith(summaryTitle);
 
         final String summaryTitle3 =
-                StrUtil.format("SummaryTitleLine1 \n SummaryTitleLine2 - 总计耗时: {}", READABLE_TOTAL_TIME);
+                StrUtil.format("SummaryTitle3Line1 \n SummaryTitle3Line2 - 总计耗时: {}", READABLE_TOTAL_TIME);
         final List<TaskFilter> taskFilters3 = Collections.singletonList(DEFAULT_PAGE_METRIC_FILTER);
         final List<String> result3 = StopWatchUtils.getDetailedStatsWithBetterFormat(sw, summaryTitle3, taskFilters3);
         assertThat(result3.size()).isEqualTo(11);
         assertThat(CollUtil.count(result3, line -> line.contains(StrUtil.format("s / {})", PAGE_SIZE)))).isEqualTo(5);
-        assertThat(result3.get(1)).startsWith(" SummaryTitleLine1 ");
-        assertThat(result3.get(3)).startsWith(StrUtil.format(" SummaryTitleLine2 - 总计耗时: {}", READABLE_TOTAL_TIME));
+        assertThat(result3.get(1)).startsWith(" SummaryTitle3Line1 ");
+        assertThat(result3.get(3)).startsWith(StrUtil.format(" SummaryTitle3Line2 - 总计耗时: {}", READABLE_TOTAL_TIME));
+
+        final String summaryTitle4 =
+                StrUtil.format("SummaryTitle4 - 总计耗时: {}", READABLE_TOTAL_TIME);
+        final List<TaskFilter> taskFilters4 = Collections.singletonList(DEFAULT_PAGE_METRIC_FILTER);
+        final List<String> result4 = StopWatchUtils.getDetailedStatsWithBetterFormat(sw, summaryTitle4, taskFilters4);
+        assertThat(result4.size()).isEqualTo(9);
+        assertThat(CollUtil.count(result4, line -> line.contains(StrUtil.format("s / {})", PAGE_SIZE)))).isEqualTo(5);
+        assertThat(result4.get(1)).startsWith(StrUtil.format(" SummaryTitle4 - 总计耗时: {}", READABLE_TOTAL_TIME));
     }
 
     @Test
@@ -179,6 +192,13 @@ class StopWatchUtilsTest {
         assertThat(result.get(5)).startsWith(summaryTitleList.get(2));
 
         Console.log("{}\n", CollUtil.join(result, StrUtils.LF));
+
+        final List<String> result2 = StopWatchUtils.getDetailedStatsWithBetterFormat(sw, summaryTitleList, INVALID_FILTER);
+        assertThat(result2.size()).isEqualTo(13);
+        assertThat(CollUtil.count(result2, line -> line.contains(StrUtil.format("s / {})", PAGE_SIZE)))).isEqualTo(0);
+        assertThat(result2.get(1)).startsWith(summaryTitleList.get(0));
+        assertThat(result2.get(3)).startsWith(summaryTitleList.get(1));
+        assertThat(result2.get(5)).startsWith(summaryTitleList.get(2));
     }
 
     @Test
@@ -205,6 +225,8 @@ class StopWatchUtilsTest {
 
     @Test
     void testSafelyStartTask() {
+        StopWatchUtils.safelyStartTask(null, "");
+
         final StopWatch sw = StopWatchUtils.newStopWatch(false);
         assertThat(sw.isRunning()).isFalse();
         assertThat(sw.getTaskCount()).isEqualTo(0);
@@ -238,8 +260,12 @@ class StopWatchUtilsTest {
 
     @Test
     void testSafelyStop() {
+        StopWatchUtils.safelyStop(null);
+
         final StopWatch sw = StopWatchUtils.newStopWatch(false);
+
         assertThat(sw.isRunning()).isFalse();
+        StopWatchUtils.safelyStop(sw);
         StopWatchUtils.safelyStop(sw);
         assertThat(sw.isRunning()).isFalse();
 

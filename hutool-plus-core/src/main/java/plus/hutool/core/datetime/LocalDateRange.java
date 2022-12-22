@@ -37,7 +37,7 @@ public class LocalDateRange implements Serializable {
     public static LocalDateRange of(String beginDateStr, String endDateStr) {
         LocalDate beginDate = DateTimeUtils.parseLocalDate(beginDateStr);
         LocalDate endDate = DateTimeUtils.parseLocalDate(endDateStr);
-        return new LocalDateRange(beginDate, endDate);
+        return of(beginDate, endDate);
     }
 
     public boolean containsDate(LocalDate date) {
@@ -65,7 +65,7 @@ public class LocalDateRange implements Serializable {
             return false;
         }
         LocalDateRange that = (LocalDateRange) o;
-        return beginDate.equals(that.beginDate) && endDate.equals(that.endDate);
+        return this.beginDate.equals(that.beginDate) && this.endDate.equals(that.endDate);
     }
 
     @Override

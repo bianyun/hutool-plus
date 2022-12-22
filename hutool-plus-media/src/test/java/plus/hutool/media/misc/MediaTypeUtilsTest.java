@@ -5,6 +5,7 @@ import cn.hutool.core.io.IORuntimeException;
 import com.documents4j.api.DocumentType;
 import org.apache.commons.io.input.BrokenInputStream;
 import org.apache.commons.io.input.NullInputStream;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -14,8 +15,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.*;
 
 class MediaTypeUtilsTest {
 
@@ -74,6 +74,23 @@ class MediaTypeUtilsTest {
     }
 
     @Test
+    void testDetectMediaType3() {
+        File textFile = FileUtil.file("classpath:testFiles/text/text");
+        File txtFile = FileUtil.file("classpath:testFiles/text/test.txt");
+        File jsFile = FileUtil.file("classpath:testFiles/text/test.js");
+        File htmlFile = FileUtil.file("classpath:testFiles/text/test.html");
+        File jsonFile = FileUtil.file("classpath:testFiles/text/test.json");
+        File abcFile = FileUtil.file("classpath:testFiles/text/test.abc");
+
+        assertThat(MediaTypeUtils.detectMediaType(textFile)).isEqualTo(MediaType.TEXT_PLAIN);
+        assertThat(MediaTypeUtils.detectMediaType(txtFile)).isEqualTo(MediaType.TEXT_PLAIN);
+        assertThat(MediaTypeUtils.detectMediaType(jsFile)).isEqualTo(MediaType.TEXT_JAVASCRIPT);
+        assertThat(MediaTypeUtils.detectMediaType(htmlFile)).isEqualTo(MediaType.TEXT_HTML);
+        assertThat(MediaTypeUtils.detectMediaType(jsonFile)).isEqualTo(MediaType.APPLICATION_JSON);
+        assertThat(MediaTypeUtils.detectMediaType(abcFile)).isEqualTo(MediaType.TEXT_PLAIN);
+    }
+
+    @Test
     void testDetectMediaType2_EmptyInputStream() {
         final InputStream nullInputStream = new NullInputStream();
         assertThat(MediaTypeUtils.detectMediaType(nullInputStream, "")).isEqualTo(MediaType.APPLICATION_OCTET_STREAM);
@@ -94,6 +111,9 @@ class MediaTypeUtilsTest {
         assertThatThrownBy(() -> MediaTypeUtils.fromFullType("illegal_full_type"))
                 .isExactlyInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Not a legal */* media type: illegal_full_type");
+        assertThatThrownBy(() -> MediaTypeUtils.fromFullType("illegal_full_type/"))
+                .isExactlyInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Not a legal */* media type: illegal_full_type/");
     }
 
     @Test
@@ -110,7 +130,9 @@ class MediaTypeUtilsTest {
         List<String> supportedMediaTypes = MediaTypeUtils.buildSupportedMediaTypes(
                 MediaType.APPLICATION_MS_WORD,
                 MediaType.APPLICATION_OOXML_DOCUMENT,
-                MediaType.APPLICATION_PDF);
+                MediaType.APPLICATION_PDF,
+                MediaType.IMAGE_JPEG);
+
 
         final String fileMediaType = "application/octet-stream";
         assertThatThrownBy(() -> MediaTypeUtils.checkIfMediaTypeSupported(fileMediaType, "test.ceb", supportedMediaTypes))
@@ -125,6 +147,9 @@ class MediaTypeUtilsTest {
         assertThatThrownBy(() -> MediaTypeUtils.checkIfMediaTypeSupported(fileMediaType2, "test.png", supportedMediaTypes))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("不支持的媒体类型: .png(image/png)");
+
+        final String fileMediaType3 = MediaType.IMAGE_JPEG_VALUE;
+        Assertions.assertDoesNotThrow(() -> MediaTypeUtils.checkIfMediaTypeSupported(fileMediaType3, "test.jpg", supportedMediaTypes));
     }
 
     @Test

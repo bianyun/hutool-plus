@@ -31,5 +31,9 @@ class CollUtilsTest {
         assertThat(list).isEqualTo(Arrays.asList("hello", "world"));
         assertThatThrownBy(() -> list.add("java")).isExactlyInstanceOf(UnsupportedOperationException.class);
         assertThatThrownBy(() -> list.remove("hello")).isExactlyInstanceOf(UnsupportedOperationException.class);
+
+        assertThatThrownBy(() -> CollUtils.unmodifiableList(true, new String[0]))
+                .isExactlyInstanceOf(IllegalArgumentException.class)
+                .hasMessage("元素数组长度必须大于 0");
     }
 }

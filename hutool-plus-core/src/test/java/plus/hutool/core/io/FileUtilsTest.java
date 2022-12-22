@@ -39,8 +39,12 @@ class FileUtilsTest {
         File tempFile = FileUtils.createRandomNamedTempFile("jpg");
         assertThat(tempFile).isFile().exists().hasExtension("jpg").hasFileName(tempFile.getName());
         assertThat(tempFile.getName()).hasSize(RANDOM_FILENAME_LENGTH + 4);
-
         FileUtil.del(tempFile);
+
+        File tempFile2 = FileUtils.createRandomNamedTempFile(null);
+        assertThat(tempFile2).isFile().exists().hasNoExtension().hasFileName(tempFile2.getName());
+        assertThat(tempFile2.getName()).hasSize(RANDOM_FILENAME_LENGTH);
+        FileUtil.del(tempFile2);
     }
 
     @Test

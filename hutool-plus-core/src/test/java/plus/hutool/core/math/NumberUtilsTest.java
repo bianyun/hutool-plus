@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class NumberUtilsTest {
 
@@ -229,6 +230,8 @@ class NumberUtilsTest {
 
     @Test
     void testToBigDecimal2() {
+        assertThat(NumberUtils.toBigDecimal(null, 0)).isEqualTo(BigDecimal.ZERO);
+        assertThat(NumberUtils.toBigDecimal(null, 1)).isEqualTo(BigDecimal.ZERO);
         assertThat(NumberUtils.toBigDecimal(123456, 0)).isEqualTo(BigDecimal.valueOf(123456));
         assertThat(NumberUtils.toBigDecimal(123456, 1)).isEqualTo(new BigDecimal("123456.0"));
         assertThat(NumberUtils.toBigDecimal(123456, 2)).isEqualTo(new BigDecimal("123456.00"));
@@ -241,6 +244,7 @@ class NumberUtilsTest {
 
     @Test
     void testToIntegralBigDecimal() {
+        assertThat(NumberUtils.toIntegralBigDecimal(0)).isEqualTo(BigDecimal.ZERO);
         assertThat(NumberUtils.toIntegralBigDecimal(0.12345)).isEqualTo(BigDecimal.ZERO);
         assertThat(NumberUtils.toIntegralBigDecimal(0.12345)).isEqualTo(new BigDecimal("0"));
         assertThat(NumberUtils.toIntegralBigDecimal(0.12345)).isNotEqualTo(new BigDecimal("0.0"));
@@ -293,6 +297,13 @@ class NumberUtilsTest {
         assertThat(NumberUtils.resolveApproximateValue(0.00057656, 2, 4)).isEqualTo(new BigDecimal("0.0006"));
         assertThat(NumberUtils.resolveApproximateValue(0.00087656, 2, 4)).isEqualTo(new BigDecimal("0.0009"));
         assertThat(NumberUtils.resolveApproximateValue(0.00097656, 2, 4)).isEqualTo(new BigDecimal("0.0010"));
+
+        assertThatThrownBy(() -> NumberUtils.resolveApproximateValue(123, -1, 4))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("小数位数必须大于等于零");
+        assertThatThrownBy(() -> NumberUtils.resolveApproximateValue(123, 3, 1))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("最小小数位数[minScale] 必须小于等于 最大小数位数[maxScale]");
     }
 
     @Test
@@ -317,6 +328,8 @@ class NumberUtilsTest {
     @Test
     void testIsBetweenClosedInterval() {
         assertThat(NumberUtils.isBetweenClosedInterval(1, 0, 2)).isTrue();
+        assertThat(NumberUtils.isBetweenClosedInterval(1, 2, 3)).isFalse();
+        assertThat(NumberUtils.isBetweenClosedInterval(1, -1, 0)).isFalse();
         assertThat(NumberUtils.isBetweenClosedInterval(-1, -2, 2)).isTrue();
         assertThat(NumberUtils.isBetweenClosedInterval(Integer.MIN_VALUE, Long.MIN_VALUE, Long.MAX_VALUE)).isTrue();
         assertThat(NumberUtils.isBetweenClosedInterval(1.1, 0.2, 2.3)).isTrue();
@@ -336,6 +349,9 @@ class NumberUtilsTest {
     @Test
     void testIsBetweenLeftOpenRightClosedInterval() {
         assertThat(NumberUtils.isBetweenLeftOpenRightClosedInterval(1, 0, 2)).isTrue();
+        assertThat(NumberUtils.isBetweenLeftOpenRightClosedInterval(1, 0, 1)).isTrue();
+        assertThat(NumberUtils.isBetweenLeftOpenRightClosedInterval(1, 1, 2)).isFalse();
+        assertThat(NumberUtils.isBetweenLeftOpenRightClosedInterval(3, 1, 2)).isFalse();
         assertThat(NumberUtils.isBetweenLeftOpenRightClosedInterval(-1, -2, 2)).isTrue();
         assertThat(NumberUtils.isBetweenLeftOpenRightClosedInterval(Integer.MIN_VALUE, Long.MIN_VALUE, Long.MAX_VALUE)).isTrue();
         assertThat(NumberUtils.isBetweenLeftOpenRightClosedInterval(1.1, 0.2, 2.3)).isTrue();
@@ -454,6 +470,7 @@ class NumberUtilsTest {
         assertThat(NumberUtils.divToPercent(999999, 1000000, 5, true)).isEqualTo("99.99990%");
         assertThat(NumberUtils.divToPercent(999999, 1000000, 5, false)).isEqualTo("99.9999%");
 
+        assertThat(NumberUtils.divToPercent(0, 1000000, 0, true)).isEqualTo("0%");
         assertThat(NumberUtils.divToPercent(1, 1000000, 0, true)).isEqualTo("0%");
         assertThat(NumberUtils.divToPercent(1, 1000000, 1, true)).isEqualTo("0.1%");
         assertThat(NumberUtils.divToPercent(1, 1000000, 2, true)).isEqualTo("0.01%");

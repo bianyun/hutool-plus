@@ -100,6 +100,17 @@ class PdfUtilsTest {
 
         assertThat(result).hasSize(22);
         assertThat(result).allMatch(byteArray -> byteArray.length > 0);
+
+        final File fileNotExists = FileUtil.file("/file/notExists.pdf");
+        assertThatThrownBy(() -> PdfUtils.extractPdfPagesToRawImageDataList(fileNotExists))
+                .isExactlyInstanceOf(IllegalArgumentException.class)
+                .hasMessage(StrUtil.format("PDF文件不存在或者不是文件: {}", fileNotExists.getAbsolutePath()));
+
+        final File dirFile = FileUtils.createDirUnderRandomTempDir("dir");
+        assertThatThrownBy(() -> PdfUtils.extractPdfPagesToRawImageDataList(dirFile))
+                .isExactlyInstanceOf(IllegalArgumentException.class)
+                .hasMessage(StrUtil.format("PDF文件不存在或者不是文件: {}", dirFile.getAbsolutePath()));
+        FileUtil.del(dirFile);
     }
 
     @Test

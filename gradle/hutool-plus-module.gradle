@@ -1,4 +1,5 @@
 apply plugin: 'java-library'
+apply plugin: "jacoco"
 apply from: "$rootDir/gradle/publications.gradle"
 
 
@@ -45,6 +46,10 @@ task javadocJar(type: Jar) {
 	from javadoc
 }
 
+tasks.withType(JavaCompile) {
+	options.encoding = "UTF-8"
+}
+
 publishing {
 	publications {
 		mavenJava(MavenPublication) {
@@ -53,6 +58,26 @@ publishing {
 			artifact javadocJar
 		}
 	}
+}
+
+test {
+	useJUnitPlatform()
+	include(["**/*Tests.class", "**/*Test.class"])
+
+	testLogging {
+		events "failed"
+		exceptionFormat "full"
+	}
+
+	finalizedBy jacocoTestReport
+}
+
+jacocoTestReport {
+	dependsOn test
+}
+
+jacoco {
+	toolVersion = "0.8.8"
 }
 
 // Disable publication of test fixture artifacts.

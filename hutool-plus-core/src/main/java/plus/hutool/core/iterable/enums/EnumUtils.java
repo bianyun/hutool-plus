@@ -173,7 +173,7 @@ public abstract class EnumUtils {
     @Nullable
     public static <E extends Enum<E>> E getFirstEnumValue(Class<E> enumClass) {
         E[] enumConsts = enumClass.getEnumConstants();
-        if (enumConsts == null || enumConsts.length == 0) {
+        if (enumConsts.length == 0) {
             return null;
         } else {
             return enumConsts[0];

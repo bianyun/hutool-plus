@@ -18,7 +18,7 @@ class ExcelWorkbookUtilsTest {
         File xlsxFile = FileUtil.file("classpath:testFiles/documents/test.xlsx");
 
         try (Workbook xlsWorkbook = ExcelWorkbookUtils.getWorkbook(xlsFile)) {
-            assertThat(ExcelWorkbookUtils.getAllSheetNames(xlsWorkbook)).hasSameElementsAs(Arrays.asList("工作表1", "工作表2"));
+            assertThat(ExcelWorkbookUtils.getAllSheetNames(xlsWorkbook)).hasSameElementsAs(Arrays.asList("工作表1", "工作表2", "工作表3"));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -35,9 +35,10 @@ class ExcelWorkbookUtilsTest {
         File xlsFile = FileUtil.file("classpath:testFiles/documents/test.xls");
         try (Workbook xlsWorkbook = ExcelWorkbookUtils.getWorkbook(xlsFile)) {
             assertThat(xlsWorkbook).isNotNull();
-            assertThat(xlsWorkbook.getNumberOfSheets()).isEqualTo(2);
+            assertThat(xlsWorkbook.getNumberOfSheets()).isEqualTo(3);
             assertThat(xlsWorkbook.getSheetAt(0).getSheetName()).isEqualTo("工作表1");
             assertThat(xlsWorkbook.getSheetAt(1).getSheetName()).isEqualTo("工作表2");
+            assertThat(xlsWorkbook.getSheetAt(2).getSheetName()).isEqualTo("工作表3");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

@@ -93,6 +93,7 @@ class MediaTypeTest {
     @Test
     void testGetOneByFileExtension() {
         assertThat(getOneByFileExtension("aaa")).isNull();
+        assertThat(getOneByFileExtension("otf")).isNull();
         assertThat(getOneByFileExtension("pdf")).isEqualTo(APPLICATION_PDF);
         assertThat(getOneByFileExtension("DOCX")).isEqualTo(APPLICATION_OOXML_DOCUMENT);
     }
@@ -102,5 +103,9 @@ class MediaTypeTest {
         //noinspection AssertBetweenInconvertibleTypes
         assertThat(MediaType.of("aaa", "bbb")).isNotEqualTo("ccc");
         assertThat(MediaType.of("aaa", "bbb")).isNotEqualTo(MediaType.of("bbb", "ccc"));
+        assertThat(MediaType.of("aaa", "bbb").getDefaultFileExtension()).isNull();
+        assertThat(MediaType.of("ccc", "ddd", "ext").getDefaultFileExtension()).isEqualTo("ext");
     }
+
+
 }

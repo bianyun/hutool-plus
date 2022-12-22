@@ -34,6 +34,9 @@ class FileSizeUtilsTest {
                 RationalNumber.of(123456789, 1024 * 1024));
         assertThat(FileSizeUtils.normalizeFileSize(123456789, KB).getUnit()).isEqualTo(GB);
 
+        assertThat(FileSizeUtils.normalizeFileSize(123456789, YB).getValue()).isEqualTo(123456789);
+        assertThat(FileSizeUtils.normalizeFileSize(123456789, YB).getUnit()).isEqualTo(YB);
+
         assertThat(FileSizeUtils.normalizeFileSize(123.45678, MB).getValue()).isEqualTo(
                 RationalNumber.of(Math.round(123.45678 * 1024 * 1024), 1048576));
         assertThat(FileSizeUtils.normalizeFileSize(123.45678, MB).getUnit()).isEqualTo(MB);
@@ -42,9 +45,15 @@ class FileSizeUtilsTest {
                 RationalNumber.of(Math.round(0.0123456 * 1024 * 1024 * 1024 * 1024 * 1024), 1024L * 1024 * 1024 * 1024));
         assertThat(FileSizeUtils.normalizeFileSize(0.0123456, PB).getUnit()).isEqualTo(TB);
 
+        assertThat(FileSizeUtils.normalizeFileSize(0.00000123456, PB).getValue()).isEqualTo(
+                RationalNumber.of(Math.round(0.00000123456 * 1024 * 1024 * 1024 * 1024 * 1024), 1024L * 1024 * 1024));
+        assertThat(FileSizeUtils.normalizeFileSize(0.00000123456, PB).getUnit()).isEqualTo(GB);
+
         assertThat(FileSizeUtils.normalizeFileSize(0.0123456, KB).getValue()).isEqualTo(13);
         assertThat(FileSizeUtils.normalizeFileSize(0.0123456, KB).getUnit()).isEqualTo(BYTE);
 
+        assertThat(FileSizeUtils.normalizeFileSize(0.0000123456, KB).getValue()).isEqualTo(0);
+        assertThat(FileSizeUtils.normalizeFileSize(0.0000123456, KB).getUnit()).isEqualTo(BYTE);
     }
 
     @Test

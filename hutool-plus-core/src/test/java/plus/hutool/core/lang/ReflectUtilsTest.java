@@ -31,7 +31,7 @@ class ReflectUtilsTest {
         assertThat(ReflectUtils.isStaticFinalField(ReflectUtil.getField(String.class, "serialVersionUID"))).isTrue();
         assertThat(ReflectUtils.isStaticFinalField(ReflectUtil.getField(Integer.class, "MIN_VALUE"))).isTrue();
         assertThat(ReflectUtils.isStaticFinalField(ReflectUtil.getField(File.class, "path"))).isFalse();
-        assertThat(ReflectUtils.isStaticFinalField(ReflectUtil.getField(File.class, "status"))).isFalse();
+        assertThat(ReflectUtils.isStaticFinalField(ReflectUtil.getField(SubClass.class, "staticStringField"))).isFalse();
     }
 
     @Test
@@ -50,6 +50,11 @@ class ReflectUtilsTest {
         assertThat(ReflectUtils.getGenericParameterClass(BaseInterface.class, "T")).isNull();
         assertThat(ReflectUtils.getGenericParameterClass(AbstractGenericBaseClass.class, "K")).isNull();
         assertThat(ReflectUtils.getGenericParameterClass(AbstractGenericBaseClass.class, "V")).isNull();
+    }
+
+    @SuppressWarnings("unused")
+    private interface NonParameterizedInterface {
+        default void doNothing() {}
     }
 
     @SuppressWarnings("unused")
@@ -82,7 +87,8 @@ class ReflectUtilsTest {
     }
 
     @SuppressWarnings("unused")
-    private static class SubClass extends AbstractGenericBaseClass<String, TestEnum1> {
+    private static class SubClass extends AbstractGenericBaseClass<String, TestEnum1> implements NonParameterizedInterface {
+        static String staticStringField = "abc";
 
         public SubClass(String s, TestEnum1 testEnum1) {
             super(s, testEnum1);

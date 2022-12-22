@@ -1,23 +1,18 @@
 import org.springframework.boot.gradle.plugin.SpringBootPlugin
 
 plugins {
-    id "java-library"
+    id 'java-library'
+    id 'jacoco'
+    id 'jacoco-report-aggregation'
     id 'org.springframework.boot' version '2.7.6' apply false
     id 'net.researchgate.release' version '3.0.2'
 }
 
 ext {
     moduleProjects = subprojects.findAll { it.name.startsWith("hutool-plus-") }
-    withoutJclOverSlf4j = {
-        exclude group: "org.slf4j", name: "jcl-over-slf4j"
-    }
 }
 
-configure([rootProject] + moduleProjects) { project ->
-    group = "plus.hutool"
-}
-
-configure(subprojects) { project ->
+configure(allprojects) { project ->
     apply plugin: "io.spring.dependency-management"
 
     ext {
@@ -91,39 +86,29 @@ configure(subprojects) { project ->
             cacheDynamicVersionsFor 0, "seconds"
         }
     }
-
 }
 
 configure(rootProject) {
+    apply from: "${rootDir}/gradle/publications.gradle"
+
     group "plus.hutool"
     description = "A great Java tool library based on Hutool library"
 
-    apply from: "${rootDir}/gradle/publications.gradle"
-}
+    tasks.named('check') {
+        dependsOn tasks.named('testCodeCoverageReport', JacocoReport)
+    }
 
+    dependencies {
+        api(project(":hutool-plus-core"))
+        api(project(":hutool-plus-extra"))
+        api(project(":hutool-plus-media"))
+        api(project(":hutool-plus-spring5"))
+    }
+}
 
 configure(moduleProjects) { project ->
     apply from: "${rootDir}/gradle/hutool-plus-module.gradle"
-
-    tasks.withType(JavaCompile) {
-        options.encoding = "UTF-8"
-    }
-
-    tasks.withType(Javadoc) {
-        options.addStringOption('Xdoclint:none', '-quiet')
-    }
-
-    tasks.named("test") {
-        useJUnitPlatform()
-        include(["**/*Tests.class", "**/*Test.class"])
-    }
-
-    test {
-        testLogging {
-            events "failed"
-            exceptionFormat "full"
-        }
-    }
+    group = "plus.hutool"
 
     dependencies {
         implementation("org.springframework:spring-core")

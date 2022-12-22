@@ -284,6 +284,9 @@ class AssertsTest {
         assertThatThrownBy(() -> Asserts.isAssignable(String.class, Integer.class, "errorMsg: {}", "params"))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("errorMsg: params");
+        assertThatThrownBy(() -> Asserts.isAssignable(String.class, null, "errorMsg: {}", "params"))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("errorMsg: params");
         assertThatThrownBy(() -> Asserts.isAssignable(String.class, Long.class, "errorMsg: {}", "params"))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("errorMsg: params");
@@ -388,6 +391,9 @@ class AssertsTest {
                 () -> new RuntimeException("message"))).isEqualTo(BigDecimal.ONE);
 
         assertThatThrownBy(() -> Asserts.checkBetween(1, 2, 3, () -> new RuntimeException("message")))
+                .isInstanceOf(RuntimeException.class)
+                .hasMessage("message");
+        assertThatThrownBy(() -> Asserts.checkBetween(4, 2, 3, () -> new RuntimeException("message")))
                 .isInstanceOf(RuntimeException.class)
                 .hasMessage("message");
 

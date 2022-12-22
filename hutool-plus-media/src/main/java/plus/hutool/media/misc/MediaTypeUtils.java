@@ -1,5 +1,6 @@
 package plus.hutool.media.misc;
 
+import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.StrUtil;
 import com.documents4j.api.DocumentType;
 import plus.hutool.core.io.FileUtils;
@@ -10,6 +11,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 媒体类型工具
@@ -19,6 +21,12 @@ import java.util.List;
  */
 @SuppressWarnings({"JavadocDeclaration", "AlibabaAbstractClassShouldStartWithAbstractNaming"})
 public abstract class MediaTypeUtils {
+
+    private static final Map<String, MediaType> OBSOLETED_TYPES_MAP = MapUtil.<String, MediaType>builder()
+            .put("text/json", MediaType.APPLICATION_JSON)
+            .put("application/javascript", MediaType.TEXT_JAVASCRIPT)
+            .put("application/vnd.oasis.opendocument.database", MediaType.APPLICATION_OPENDOCUMENT_BASE)
+            .build();
 
     private MediaTypeUtils() {}
 
@@ -39,7 +47,9 @@ public abstract class MediaTypeUtils {
         String mediaTypeValue = TikaUtils.detectMediaType(file);
         Asserts.notBlank(mediaTypeValue, "文件的媒体类型不能为空: {}", file.getAbsolutePath());
 
-        if (mediaTypeValue.equals(MediaType.APPLICATION_OCTET_STREAM_VALUE) ||
+        if (OBSOLETED_TYPES_MAP.containsKey(mediaTypeValue)) {
+            return OBSOLETED_TYPES_MAP.get(mediaTypeValue);
+        } else if (mediaTypeValue.equals(MediaType.APPLICATION_OCTET_STREAM_VALUE) ||
                 mediaTypeValue.equals(MediaType.TEXT_PLAIN_VALUE)) {
             String fileExtension = FileUtils.getFileExtension(file.getName());
             if (StrUtil.isNotBlank(fileExtension)) {

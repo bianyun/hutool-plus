@@ -81,6 +81,7 @@ class EnumUtilsTest {
 
         assertThat(TestEnum3.ENUM_CONST_1.getLabel()).isEqualTo("test_enum3_const_1");
         assertThat(TestEnum3.ENUM_CONST_1.getCode()).isEqualTo(1);
+
     }
 
     @Test
@@ -92,6 +93,8 @@ class EnumUtilsTest {
     void testIsAnyOf() {
         assertThat(EnumUtils.isAnyOf(TestEnum1.ENUM_CONST_1, TestEnum1.ENUM_CONST_2, TestEnum1.ENUM_CONST_3)).isFalse();
         assertThat(EnumUtils.isAnyOf(TestEnum1.ENUM_CONST_1, TestEnum1.ENUM_CONST_2, TestEnum1.ENUM_CONST_1)).isTrue();
+        assertThat(EnumUtils.isAnyOf(TestEnum1.ENUM_CONST_1, TestEnum1.ENUM_CONST_1)).isTrue();
+        assertThat(EnumUtils.isAnyOf(TestEnum1.ENUM_CONST_1, TestEnum1.ENUM_CONST_2)).isFalse();
     }
 
     @Test

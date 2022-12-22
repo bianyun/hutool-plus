@@ -41,7 +41,7 @@ class ExcelWorksheetUtilsTest {
         assertThat(sheet2.getSheetName()).isEqualTo("工作表2");
 
         final List<Map<String, String>> result1 = ExcelWorksheetUtils.readAllData(sheet1);
-        assertThat(result1).hasSize(6);
+        assertThat(result1).hasSize(8);
         assertThat(result1.get(0)).containsKeys("工号", "姓名", "用户名", "密码", "登录时间");
         assertThat(result1.get(0).get("工号")).isEqualTo("10001");
         assertThat(result1.get(0).get("姓名")).isEqualTo("郭靖");
@@ -83,7 +83,7 @@ class ExcelWorksheetUtilsTest {
                 .build();
         final List<Map<String, String>> result1 = ExcelWorksheetUtils.readAllData(sheet1, headerAlias1);
 
-        assertThat(result1).hasSize(6);
+        assertThat(result1).hasSize(8);
         assertThat(result1.get(0)).containsKeys("employeeId", "name", "username", "password", "loginTime");
         assertThat(result1.get(0).get("employeeId")).isEqualTo("10001");
         assertThat(result1.get(0).get("name")).isEqualTo("郭靖");
@@ -110,5 +110,23 @@ class ExcelWorksheetUtilsTest {
         assertThat(result2.get(0).get("createdDate")).isEqualTo("2018-05-01");
         assertThat(result2.get(4)).containsKeys("id", "sysName", "sysCode", "storeCode", "createdDate");
         assertThat(result2.get(4)).containsValues("10005", "大数据平台", "99016", "hdfs", "2018-05-05");
+    }
+
+    @Test
+    void testReadAllData3() {
+        final File xlsFile = FileUtil.file("classpath:testFiles/documents/test.xls");
+        final Workbook workbook = ExcelWorkbookUtils.getWorkbook(xlsFile);
+
+        final Sheet sheet3 = workbook.getSheetAt(2);
+        assertThat(sheet3.getSheetName()).isEqualTo("工作表3");
+
+        final List<Map<String, String>> result = ExcelWorksheetUtils.readAllData(sheet3);
+        assertThat(result).hasSize(5);
+        assertThat(result.get(0)).containsKeys("标题1", "标题2", "标题3");
+        assertThat(result.get(0).get("标题1")).isEqualTo("99012");
+        assertThat(result.get(0).get("标题2")).isEqualTo("oss");
+        assertThat(result.get(0).get("标题3")).isEqualTo("2018-05-01");
+        assertThat(result.get(4)).containsKeys("标题1", "标题2", "标题3");
+        assertThat(result.get(4)).containsValues("99016", "hdfs", "2018-05-05");
     }
 }

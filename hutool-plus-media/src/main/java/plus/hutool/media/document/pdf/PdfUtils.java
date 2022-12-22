@@ -3,7 +3,6 @@ package plus.hutool.media.document.pdf;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IORuntimeException;
 import cn.hutool.core.io.IoUtil;
-import cn.hutool.core.io.file.PathUtil;
 import cn.hutool.core.util.StrUtil;
 import org.apache.pdfbox.multipdf.Splitter;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -15,7 +14,6 @@ import plus.hutool.core.lang.ExceptionUtils;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -84,10 +82,7 @@ public abstract class PdfUtils {
      * @return 图片原始数据列表
      */
     public static List<byte[]> extractPdfPagesToRawImageDataList(Path pdfFilePath) {
-        Asserts.notNull(pdfFilePath, "PDF文件路径不能为空");
-        Asserts.isTrue(Files.isRegularFile(pdfFilePath) && Files.exists(pdfFilePath),
-                "PDF文件不存在或者不是文件: {}", pdfFilePath.toAbsolutePath());
-        return extractPdfPagesToRawImageDataList(PathUtil.getInputStream(pdfFilePath));
+        return extractPdfPagesToRawImageDataList(pdfFilePath.toFile());
     }
 
     /**
@@ -98,7 +93,7 @@ public abstract class PdfUtils {
      */
     public static List<byte[]> extractPdfPagesToRawImageDataList(File pdfFile) {
         Asserts.notNull(pdfFile, "PDF文件路径不能为空");
-        Asserts.isTrue(pdfFile.isFile() && pdfFile.exists(), "PDF文件不存在或者不是文件: {}", pdfFile.getAbsolutePath());
+        Asserts.isTrue(pdfFile.exists() && pdfFile.isFile(), "PDF文件不存在或者不是文件: {}", pdfFile.getAbsolutePath());
         return extractPdfPagesToRawImageDataList(FileUtil.getInputStream(pdfFile));
     }
 

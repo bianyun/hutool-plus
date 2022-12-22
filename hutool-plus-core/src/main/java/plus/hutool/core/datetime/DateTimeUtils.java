@@ -716,9 +716,7 @@ public abstract class DateTimeUtils {
         int startIndexOfAdjustStepSize = totalDays % splitsNum - 1;
 
         int i = 0;
-        for (LocalDate beginDateOfSplit = beginDate, endDateOfSplit = beginDateOfSplit.plusDays(stepDays);
-             !endDateOfSplit.isAfter(endDate); i++) {
-
+        for (LocalDate beginDateOfSplit = beginDate, endDateOfSplit = beginDateOfSplit.plusDays(stepDays);; i++) {
             if (i == startIndexOfAdjustStepSize) {
                 stepDays -= 1;
             }
