@@ -38,7 +38,7 @@ Hutool Plus 是一个工具类库，之所以叫 Hutool Plus，是由于平时�
 ## 安装
 
 ### Maven
-在项目的 pom.xml 中加入需要的组件（:
+在项目的 pom.xml 中加入需要的组件: 
 
 ```xml
 <dependencies>
