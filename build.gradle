@@ -16,7 +16,7 @@ configure(allprojects) { project ->
     apply plugin: "io.spring.dependency-management"
 
     ext {
-        hutoolVersion = '5.8.10'
+        hutoolVersion = '5.8.11'
         springVersion = '5.3.24'
         log4j2Version = '2.19.0'
         poiVersion = '5.2.3'
@@ -80,7 +80,7 @@ configure(allprojects) { project ->
         }
     }
 
-    configurations.all {
+    configurations.configureEach {
         resolutionStrategy {
             cacheChangingModulesFor 0, "seconds"
             cacheDynamicVersionsFor 0, "seconds"
