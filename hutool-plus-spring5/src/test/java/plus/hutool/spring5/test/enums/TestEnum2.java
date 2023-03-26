@@ -6,7 +6,7 @@ package plus.hutool.spring5.test.enums;
  * @author bianyun
  * @date 2022/11/28
  */
-@SuppressWarnings({"JavadocDeclaration", "unused"})
+@SuppressWarnings({"unused", "JavadocDeclaration"})
 public enum TestEnum2 {
 
 }

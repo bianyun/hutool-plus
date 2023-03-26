@@ -1,7 +1,7 @@
 package plus.hutool.core.datetime;
 
 import cn.hutool.core.util.StrUtil;
-import org.springframework.lang.Nullable;
+import plus.hutool.core.lang.annotation.Nullable;
 import plus.hutool.core.iterable.collection.ArrayUtils;
 import plus.hutool.core.lang.Asserts;
 import plus.hutool.core.lang.ExceptionUtils;
@@ -45,7 +45,7 @@ import static plus.hutool.core.text.string.StrUtils.SLASH;
  * @author bianyun
  * @date 2022/11/27
  */
-@SuppressWarnings({"unused", "JavadocDeclaration", "AlibabaAbstractClassShouldStartWithAbstractNaming"})
+@SuppressWarnings({"unused", "JavadocDeclaration"})
 public abstract class DateTimeUtils {
 
     public static final long HOURS_PER_DAY = TimeUnit.DAYS.toHours(1);
@@ -141,8 +141,7 @@ public abstract class DateTimeUtils {
         };
     }
 
-    private DateTimeUtils() {
-    }
+    private DateTimeUtils() {}
 
     /**
      * 将 {@link ChronoUnit} 为单位的持续时间转换为 {@link Duration} 格式

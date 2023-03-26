@@ -2,5 +2,5 @@
 @NonNullFields
 package plus.hutool.core.iterable.collection;
 
-import org.springframework.lang.NonNullApi;
-import org.springframework.lang.NonNullFields;
+import plus.hutool.core.lang.annotation.NonNullApi;
+import plus.hutool.core.lang.annotation.NonNullFields;

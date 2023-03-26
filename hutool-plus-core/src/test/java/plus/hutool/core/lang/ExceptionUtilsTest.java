@@ -9,6 +9,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.format.DateTimeParseException;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class ExceptionUtilsTest {
@@ -78,4 +79,18 @@ class ExceptionUtilsTest {
     void testUnreachableButCompilerNeedsThis() {
         assertThatThrownBy(ExceptionUtils::unreachableButCompilerNeedsThis).isInstanceOf(AssertionError.class);
     }
+
+    @Test
+    void testNewException() {
+        assertThat(ExceptionUtils.newException(RuntimeException.class, new Exception("cause exception"), "Hello {}", "world"))
+                .isExactlyInstanceOf(RuntimeException.class)
+                .hasMessage("Hello world")
+                .hasCauseExactlyInstanceOf(Exception.class)
+                .hasRootCauseMessage("cause exception");
+        assertThat(ExceptionUtils.newException(RuntimeException.class, "Hello {}", "world"))
+                .isExactlyInstanceOf(RuntimeException.class)
+                .hasMessage("Hello world")
+                .hasNoCause();
+    }
+
 }

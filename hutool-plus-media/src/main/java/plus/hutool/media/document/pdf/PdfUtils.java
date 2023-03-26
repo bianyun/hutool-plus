@@ -31,7 +31,7 @@ import java.util.stream.IntStream;
  * @author bianyun
  * @date 2022/12/07
  */
-@SuppressWarnings({"JavadocDeclaration", "AlibabaAbstractClassShouldStartWithAbstractNaming"})
+@SuppressWarnings("JavadocDeclaration")
 public abstract class PdfUtils {
     private static final String DEFAULT_IMAGE_FORMAT = "png";
     private static final String DEFAULT_IMAGE_SUFFIX = StrUtil.DOT + DEFAULT_IMAGE_FORMAT;
@@ -97,8 +97,7 @@ public abstract class PdfUtils {
      * @return 图片原始数据列表
      */
     public static List<byte[]> extractPdfPagesToRawImageDataList(File pdfFile) {
-        Asserts.notNull(pdfFile, "PDF文件路径不能为空");
-        Asserts.isTrue(pdfFile.exists() && pdfFile.isFile(), "PDF文件不存在或者不是文件: {}", pdfFile.getAbsolutePath());
+        Asserts.isTrue(FileUtils.fileExists(pdfFile), "PDF文件不存在或者不是文件: {}", pdfFile.getAbsolutePath());
         return extractPdfPagesToRawImageDataList(FileUtil.getInputStream(pdfFile));
     }
 

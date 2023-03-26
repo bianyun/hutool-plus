@@ -77,20 +77,9 @@ jacocoTestReport {
 	reports {
 		xml.required = true
 	}
-
-	afterEvaluate {
-		classDirectories.setFrom(files(classDirectories.files.collect {
-			fileTree(dir: it, exclude: [
-				"plus/hutool/media/document/convert/DocumentConvertUtils.class"
-			])
-		}))
-	}
 }
 
 jacoco {
 	toolVersion = "0.8.8"
 }
 
-// Disable publication of test fixture artifacts.
-//components.java.withVariantsFromConfiguration(configurations.testFixturesApiElements) { skip() }
-//components.java.withVariantsFromConfiguration(configurations.testFixturesRuntimeElements) { skip() }

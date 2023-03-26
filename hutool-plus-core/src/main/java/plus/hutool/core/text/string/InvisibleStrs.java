@@ -9,7 +9,7 @@ import cn.hutool.core.util.CharUtil;
  * @author bianyun
  * @date 2022/11/27
  */
-@SuppressWarnings({"JavadocDeclaration", "unused"})
+@SuppressWarnings({"unused", "JavadocDeclaration"})
 interface InvisibleStrs {
 
     // -------------------------------------------------------------------------------------------------------

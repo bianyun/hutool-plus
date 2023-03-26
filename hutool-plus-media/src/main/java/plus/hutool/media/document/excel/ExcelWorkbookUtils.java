@@ -14,7 +14,7 @@ import java.util.List;
  * @author bianyun
  * @date 2022/12/06
  */
-@SuppressWarnings({"JavadocDeclaration", "AlibabaAbstractClassShouldStartWithAbstractNaming"})
+@SuppressWarnings("JavadocDeclaration")
 public abstract class ExcelWorkbookUtils {
 
     private ExcelWorkbookUtils() {}

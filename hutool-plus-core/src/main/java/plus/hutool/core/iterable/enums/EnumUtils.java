@@ -3,7 +3,7 @@ package plus.hutool.core.iterable.enums;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
-import org.springframework.lang.Nullable;
+import plus.hutool.core.lang.annotation.Nullable;
 import plus.hutool.core.iterable.collection.ArrayUtils;
 import plus.hutool.core.lang.ReflectUtils;
 
@@ -25,14 +25,13 @@ import java.util.stream.Collectors;
  * @author bianyun
  * @date 2022/11/27
  */
-@SuppressWarnings({"JavadocDeclaration", "AlibabaAbstractClassShouldStartWithAbstractNaming"})
+@SuppressWarnings("JavadocDeclaration")
 public abstract class EnumUtils {
 
     private static final String ENUM_CLASS_INTERNAL_FIELD_NAME = "name";
     private static final String ENUM_CLASS_INTERNAL_FIELD_ORDINAL = "ordinal";
 
-    private EnumUtils() {
-    }
+    private EnumUtils() {}
 
     /**
      * 获取枚举类型对象的作为参数传递时的默认参数名
@@ -218,11 +217,9 @@ public abstract class EnumUtils {
             return true;
         }
 
-        if (remainings.length > 0) {
-            for (E other : remainings) {
-                if (lhs == other) {
-                    return true;
-                }
+        for (E other : remainings) {
+            if (lhs == other) {
+                return true;
             }
         }
         return false;

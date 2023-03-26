@@ -1,5 +1,9 @@
 description = "Hutool Plus Extra Tools"
 
+repositories {
+    mavenCentral()
+}
+
 dependencies {
     api(project(":hutool-plus-core"))
     api("cn.hutool:hutool-cache")
@@ -8,5 +12,5 @@ dependencies {
 
     implementation("org.slf4j:slf4j-api")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
-    testImplementation("io.github.hakky54:logcaptor:2.7.10")
+    testImplementation('io.github.hakky54:logcaptor:2.8.0')
 }

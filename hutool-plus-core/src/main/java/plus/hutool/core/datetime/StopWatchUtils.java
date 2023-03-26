@@ -6,7 +6,7 @@ import cn.hutool.core.date.StopWatch.TaskInfo;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.CharUtil;
 import cn.hutool.core.util.StrUtil;
-import org.springframework.lang.Nullable;
+import plus.hutool.core.lang.annotation.Nullable;
 import plus.hutool.core.lang.Asserts;
 import plus.hutool.core.math.NumberUtils;
 import plus.hutool.core.text.string.StrUtils;
@@ -27,13 +27,12 @@ import java.util.stream.Collectors;
  * @author bianyun
  * @date 2022/11/27
  */
-@SuppressWarnings({"JavadocDeclaration", "AlibabaAbstractClassShouldStartWithAbstractNaming"})
+@SuppressWarnings("JavadocDeclaration")
 public abstract class StopWatchUtils {
 
     private static final String TASK_LINE_TEMPLATE = " {}{}  => [{}] {}";
 
-    private StopWatchUtils() {
-    }
+    private StopWatchUtils() {}
 
     /**
      * 获取 格式更好的详细耗时统计数据

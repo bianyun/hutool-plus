@@ -15,11 +15,7 @@ import java.util.concurrent.TimeUnit;
  * @author bianyun
  * @date 2022/12/06
  */
-@SuppressWarnings({
-        "JavadocDeclaration",
-        "AlibabaLowerCamelCaseVariableNaming",
-        "AlibabaAbstractClassShouldStartWithAbstractNaming"
-})
+@SuppressWarnings({"AlibabaLowerCamelCaseVariableNaming", "RedundantSuppression", "JavadocDeclaration"})
 public abstract class CacheUtils {
     private CacheUtils() {}
 

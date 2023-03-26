@@ -14,12 +14,11 @@ import java.util.Set;
  * @author bianyun
  * @date 2022/11/27
  */
-@SuppressWarnings({"JavadocDeclaration", "AlibabaAbstractClassShouldStartWithAbstractNaming"})
+@SuppressWarnings("JavadocDeclaration")
 public abstract class ArrayUtils {
     public static final int[] EMPTY_INT_ARRAY = new int[0];
 
-    private ArrayUtils() {
-    }
+    private ArrayUtils() {}
 
     /**
      * 判断字符串数组是否包含指定字符串列表中的任意一个字符串（不区分大小写）

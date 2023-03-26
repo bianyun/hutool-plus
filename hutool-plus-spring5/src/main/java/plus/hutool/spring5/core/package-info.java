@@ -2,5 +2,5 @@
 @NonNullFields
 package plus.hutool.spring5.core;
 
-import org.springframework.lang.NonNullApi;
-import org.springframework.lang.NonNullFields;
+import plus.hutool.core.lang.annotation.NonNullApi;
+import plus.hutool.core.lang.annotation.NonNullFields;

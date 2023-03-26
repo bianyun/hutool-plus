@@ -3,7 +3,7 @@ package plus.hutool.core.math;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
-import org.springframework.lang.Nullable;
+import plus.hutool.core.lang.annotation.Nullable;
 import plus.hutool.core.lang.Asserts;
 import plus.hutool.core.text.regex.PatternPools;
 import plus.hutool.core.text.string.StrUtils;
@@ -19,7 +19,7 @@ import java.text.NumberFormat;
  * @author bianyun
  * @date 2022/11/27
  */
-@SuppressWarnings({"JavadocDeclaration", "AlibabaAbstractClassShouldStartWithAbstractNaming"})
+@SuppressWarnings("JavadocDeclaration")
 public abstract class NumberUtils {
 
     public static final String ONE_HUNDRED_PERCENT = "100%";
@@ -390,7 +390,7 @@ public abstract class NumberUtils {
     }
 
     /**
-     * 解析数组的宽度
+     * 解析数值的宽度
      *
      * @param num 数值
      * @return 数值的宽度

@@ -6,7 +6,7 @@ package plus.hutool.core.text.string;
  * @author bianyun
  * @date 2022/11/27
  */
-@SuppressWarnings({"JavadocDeclaration", "unused"})
+@SuppressWarnings({"unused", "JavadocDeclaration"})
 interface AsciiAlphaNumericStrs {
 
     String UPPERCASE_LETTER_A = "A";

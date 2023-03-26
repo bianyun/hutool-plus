@@ -9,8 +9,9 @@ import plus.hutool.core.text.string.StrUtils;
  * @author bianyun
  * @date 2022/11/29
  */
-@SuppressWarnings({"JavadocDeclaration", "AlibabaAbstractClassShouldStartWithAbstractNaming"})
+@SuppressWarnings("JavadocDeclaration")
 public abstract class OssUtils {
+    private OssUtils() {}
 
     /**
      * 规范 OSS 中的目录路径
@@ -26,5 +27,4 @@ public abstract class OssUtils {
         return newDirPathInOss;
     }
 
-    private OssUtils() {}
 }

@@ -8,8 +8,8 @@ import lombok.NoArgsConstructor;
  * @author bianyun
  * @date 2022/11/27
  */
-@NoArgsConstructor
 @SuppressWarnings("JavadocDeclaration")
+@NoArgsConstructor
 public class UnsupportedClientRequestException extends IllegalArgumentException {
 
     public UnsupportedClientRequestException(String message) {

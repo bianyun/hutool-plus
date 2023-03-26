@@ -6,7 +6,7 @@ package plus.hutool.core.iterable.enums;
  * @author bianyun
  * @date 2022/11/27
  */
-@SuppressWarnings({"JavadocDeclaration", "unused"})
+@SuppressWarnings({"unused", "JavadocDeclaration"})
 public interface LabelProvidedEnum {
 
     /**

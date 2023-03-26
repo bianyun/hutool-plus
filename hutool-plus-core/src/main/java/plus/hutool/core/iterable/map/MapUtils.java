@@ -15,10 +15,9 @@ import java.util.function.Function;
  * @author bianyun
  * @date 2022/11/27
  */
-@SuppressWarnings({"JavadocDeclaration", "AlibabaAbstractClassShouldStartWithAbstractNaming"})
+@SuppressWarnings("JavadocDeclaration")
 public abstract class MapUtils {
-    private MapUtils() {
-    }
+    private MapUtils() {}
 
     /**
      * 根据给定的元素对象变长数组构建不可变的MAP

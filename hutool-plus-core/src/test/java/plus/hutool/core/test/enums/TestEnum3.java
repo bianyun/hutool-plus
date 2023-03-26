@@ -8,7 +8,7 @@ import plus.hutool.core.iterable.enums.LabelProvidedEnum;
  * @author bianyun
  * @date 2022/11/28
  */
-@SuppressWarnings({"JavadocDeclaration", "unused"})
+@SuppressWarnings({"unused", "JavadocDeclaration"})
 public enum TestEnum3 implements LabelProvidedEnum {
     ENUM_CONST_1("test_enum3_const_1", 1),
     ENUM_CONST_2("test_enum3_const_2", 2),

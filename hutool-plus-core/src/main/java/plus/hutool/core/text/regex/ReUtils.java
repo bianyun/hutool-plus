@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
  * @author bianyun
  * @date 2022/11/27
  */
-@SuppressWarnings({"JavadocDeclaration", "AlibabaAbstractClassShouldStartWithAbstractNaming"})
+@SuppressWarnings("JavadocDeclaration")
 public abstract class ReUtils {
 
     private static final int INDEX_NOT_FOUND = -1;

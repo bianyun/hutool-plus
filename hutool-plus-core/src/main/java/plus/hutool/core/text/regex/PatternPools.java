@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
  * @author bianyun
  * @date 2022/11/27
  */
-@SuppressWarnings({"JavadocDeclaration", "AlibabaAbstractClassShouldStartWithAbstractNaming"})
+@SuppressWarnings("JavadocDeclaration")
 public abstract class PatternPools extends PatternPool {
 
     public static final Pattern TRAILING_CONTINUOUS_ZEROS = Pattern.compile(RegexPools.REGEX_TRAILING_CONTINUOUS_ZEROS);

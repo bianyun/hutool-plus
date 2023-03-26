@@ -17,7 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static plus.hutool.core.lang.Asserts.TEMPLATE_VALUE_MUST_BE_BETWEEN_AND;
 
-@SuppressWarnings("ConstantConditions")
+@SuppressWarnings("DataFlowIssue")
 class AssertsTest {
 
     @Test
@@ -67,7 +67,6 @@ class AssertsTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("errorMsg: params");
     }
-
 
     @Test
     void testNotNull1() {

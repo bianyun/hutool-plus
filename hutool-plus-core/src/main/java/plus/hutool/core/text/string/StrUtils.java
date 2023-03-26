@@ -5,7 +5,7 @@ import cn.hutool.core.text.StrPool;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
-import org.springframework.lang.Nullable;
+import plus.hutool.core.lang.annotation.Nullable;
 
 import java.util.Collection;
 import java.util.function.Predicate;
@@ -19,7 +19,7 @@ import static plus.hutool.core.text.regex.RegexPools.REGEX_ZERO_OR_MORE_WHITE_SP
  * @author bianyun
  * @date 2022/11/27
  */
-@SuppressWarnings({"JavadocDeclaration", "AlibabaAbstractClassShouldStartWithAbstractNaming"})
+@SuppressWarnings("JavadocDeclaration")
 public abstract class StrUtils implements InvisibleStrs, AsciiAlphaNumericStrs,
         PrintableAsciiSymbolStrs, SimplifiedChineseSymbolStrs {
     private StrUtils() {}
@@ -217,7 +217,6 @@ public abstract class StrUtils implements InvisibleStrs, AsciiAlphaNumericStrs,
      * @param maxExposedPartLen 不脱敏部分的最大长度
      * @return 已脱敏的字符串
      */
-    @SuppressWarnings("AlibabaUndefineMagicConstant")
     public static String partiallyDesensitize(final String str, final int maxExposedPartLen) {
         if (StrUtil.isBlank(str)) {
             return str;
@@ -262,7 +261,7 @@ public abstract class StrUtils implements InvisibleStrs, AsciiAlphaNumericStrs,
      * @param str 待计算长度的字符串
      * @return 包含汉字的字符串长度
      */
-    @SuppressWarnings("checkstyle:AvoidEscapedUnicodeCharacters")
+    @SuppressWarnings({"checkstyle:AvoidEscapedUnicodeCharacters", "UnnecessaryUnicodeEscape"})
     public static int lenOfHansStr(String str) {
         int valueLength = 0;
         String chinese = "[\u0391-\uFFE5]";

@@ -1,14 +1,13 @@
+//file:noinspection SpellCheckingInspection
 description = "Hutool Plus Media Tools"
 
 dependencies {
     api(project(":hutool-plus-core"))
-    api("com.documents4j:documents4j-api")
     api("org.apache.poi:poi")
 
     implementation("cn.hutool:hutool-poi")
+    implementation("cn.hutool:hutool-crypto")
     implementation("org.apache.pdfbox:pdfbox")
-    implementation("com.documents4j:documents4j-local")
-    runtimeOnly("com.documents4j:documents4j-transformer-msoffice-word")
     implementation("org.apache.tika:tika-core")
     runtimeOnly("org.apache.tika:tika-parser-pdf-module")
     runtimeOnly("org.apache.tika:tika-parser-text-module")
@@ -16,5 +15,15 @@ dependencies {
     runtimeOnly("org.apache.tika:tika-parser-miscoffice-module")
     implementation("org.imgscalr:imgscalr-lib")
     implementation("ch.qos.logback:logback-classic")
+    implementation("org.ofdrw:ofdrw-converter")
+    implementation("com.itextpdf:pdfoffice")
+    implementation("com.luhuiguo:aspose-words")
+}
 
+test {
+    jacoco {
+        excludes = [
+                "com/zoran/zmps/conversion/**",
+        ]
+    }
 }

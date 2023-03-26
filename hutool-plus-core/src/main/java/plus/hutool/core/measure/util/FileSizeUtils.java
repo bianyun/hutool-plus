@@ -25,7 +25,7 @@ import static plus.hutool.core.math.NumberUtils.resolveApproximateValue;
  * @author bianyun
  * @date 2022/11/27
  */
-@SuppressWarnings({"JavadocDeclaration", "AlibabaAbstractClassShouldStartWithAbstractNaming"})
+@SuppressWarnings("JavadocDeclaration")
 public abstract class FileSizeUtils {
 
     public static final int FILE_SIZE_CONVERSION_FACTOR = 1024;

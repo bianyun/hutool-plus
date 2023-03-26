@@ -1,0 +1,105 @@
+// noinspection JSUnusedGlobalSymbols
+
+/**
+ * vue配置，用于注册和设置第三方 Vue组件，
+ *
+ * @author bianyun
+ * @date   2022/3/5
+ */
+
+
+// 全局设置 element-ui 组件的属性
+Vue.prototype.$ELEMENT = {
+    // 默认组件尺寸设置为 mini
+    size: 'mini',
+}
+// element-ui中需要修改的全局配置
+Vue.prototype.$CUSTOM_ELEMENT_CONFIG = {
+    // 表头样式
+    tableHeaderCellStyle: {
+        background:'#f5f5f5',
+        color:'#666'
+    }
+}
+
+Vue.prototype.setSessionItem = function(key, newVal) {
+    let newStorageEvent = document.createEvent('StorageEvent');
+    const storage = {
+        setItem: function(k, val) {
+            sessionStorage.setItem(k, val);
+
+            // 初始化StorageEvent 事件
+            newStorageEvent.initStorageEvent(
+                "setItem", //事件别名
+                false,
+                false,
+                k,
+                null,
+                val,
+                null,
+                null
+            )
+            // 派发事件
+            window.dispatchEvent(newStorageEvent)
+        }
+    }
+    return storage.setItem(key,newVal)
+}
+
+// 注册 vue-echarts 组件
+Vue.component("v-chart", VueECharts)
+
+// httpVueLoader 初始化
+httpVueLoader.httpRequest = function (url) {
+    return axios.get(url)
+        .then(function (res) {
+            return res.data;
+        })
+        .catch(function (err) {
+            return Promise.reject(err.status);
+        });
+}
+
+// httpVueLoader 增加 scss 支持
+const sass = new Sass()
+httpVueLoader.langProcessor.scss = function (scssText) {
+    return new Promise(function (resolve, reject) {
+        sass.compile(scssText, function (result) {
+            if (result.status === 0)
+                resolve(result.text)
+            else
+                reject(result)
+        });
+    });
+}
+// 文件大小格式化过滤器
+Vue.filter("fileSizeFormat", fileSizeFormat)
+
+// 将常用工具方法注册为 Vue 全局混入方法
+Vue.mixin({
+    data() {
+        return {
+            deleteItemMsg: '确定要删除吗？', //全局删除选项提示，删除统一提示语
+            stopItemMsg: '确定要停止吗?' //全局停止选项提示，停止统一提示语
+        }
+    },
+    methods: {
+        calcStringWidth,
+        isNullOrUndefined,
+        isBlankString,
+        isStringAndNotBlank,
+        addSuffixIfNotEndsWith,
+        removePrefixIfStartsWith,
+        setValueIfValid,
+        addThousandSeparator,
+
+        adminReq,
+        adminGet,
+        adminPost,
+        adminPut,
+        adminDelete,
+        adminPatch,
+        dateFormat,
+        matchFileSuffixType
+    }
+})

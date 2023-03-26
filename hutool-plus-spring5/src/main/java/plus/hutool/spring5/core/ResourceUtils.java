@@ -16,7 +16,7 @@ import java.net.MalformedURLException;
  * @author bianyun
  * @date 2022/12/06
  */
-@SuppressWarnings({"JavadocDeclaration", "AlibabaAbstractClassShouldStartWithAbstractNaming"})
+@SuppressWarnings("JavadocDeclaration")
 public abstract class ResourceUtils {
     private ResourceUtils() {}
 

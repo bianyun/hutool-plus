@@ -13,7 +13,7 @@ import java.util.List;
  * @author bianyun
  * @date 2022/11/27
  */
-@SuppressWarnings({"JavadocDeclaration", "unused", "AlibabaAbstractClassShouldStartWithAbstractNaming"})
+@SuppressWarnings({"unused", "JavadocDeclaration"})
 public abstract class MathUtils {
     private MathUtils() {}
 
@@ -33,7 +33,6 @@ public abstract class MathUtils {
      * @param valueArray 待计算的数值数组（BigDecimal[]类型）
      * @return 计算出的中位数
      */
-    @SuppressWarnings("AlibabaUndefineMagicConstant")
     public static BigDecimal calcMedian(BigDecimal[] valueArray, int scale) {
         Arrays.sort(valueArray);
         BigDecimal median;

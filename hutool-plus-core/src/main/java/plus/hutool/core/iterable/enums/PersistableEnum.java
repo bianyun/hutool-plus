@@ -10,7 +10,7 @@ import java.io.Serializable;
  * @author bianyun
  * @date 2022/11/27
  */
-@SuppressWarnings({"JavadocDeclaration", "unused"})
+@SuppressWarnings({"unused", "JavadocDeclaration"})
 public interface PersistableEnum<T extends Serializable> {
 
     /**

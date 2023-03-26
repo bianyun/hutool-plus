@@ -12,7 +12,7 @@ import plus.hutool.core.text.string.StrUtils;
  * @author bianyun
  * @date 2022/12/06
  */
-@SuppressWarnings({"JavadocDeclaration", "unused", "AlibabaAbstractClassShouldStartWithAbstractNaming"})
+@SuppressWarnings({"unused", "JavadocDeclaration"})
 public abstract class LogUtils {
 
     private static final String LOG_MSG_TEMPLATE = "==={}-{}";

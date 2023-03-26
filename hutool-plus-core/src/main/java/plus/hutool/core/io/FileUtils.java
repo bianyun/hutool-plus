@@ -4,7 +4,8 @@ import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.system.SystemUtil;
-import org.springframework.lang.Nullable;
+import plus.hutool.core.lang.annotation.Nullable;
+import plus.hutool.core.lang.Asserts;
 import plus.hutool.core.text.string.StrUtils;
 
 import java.io.File;
@@ -16,7 +17,7 @@ import java.nio.file.Paths;
  * @author bianyun
  * @date 2022/11/27
  */
-@SuppressWarnings({"JavadocDeclaration", "AlibabaAbstractClassShouldStartWithAbstractNaming"})
+@SuppressWarnings("JavadocDeclaration")
 public abstract class FileUtils {
 
     public static final String TEMP_DIR = SystemUtil.getUserInfo().getTempDir();
@@ -31,10 +32,20 @@ public abstract class FileUtils {
     /**
      * 获取文件扩展名（不含点号）
      *
+     * @param file 文件
+     * @return 文件扩展名
+     */
+    public static String getFileExtension(File file) {
+        return getFileExtension(file.getName());
+    }
+
+    /**
+     * 获取文件扩展名（不含点号）
+     *
      * @param fileName 文件名
      * @return 文件扩展名
      */
-    public static String getFileExtension(@Nullable String fileName) {
+    public static String getFileExtension(String fileName) {
         if (StrUtil.isBlank(fileName) || !fileName.contains(StrUtils.DOT)) {
             return StrUtils.EMPTY;
         }
@@ -45,10 +56,20 @@ public abstract class FileUtils {
     /**
      * 获取文件扩展名（含扩展名前面的点号）
      *
+     * @param file 文件
+     * @return 文件扩展名
+     */
+    public static String getFileExtensionWithPrefixDot(File file) {
+        return getFileExtensionWithPrefixDot(file.getName());
+    }
+
+    /**
+     * 获取文件扩展名（含扩展名前面的点号）
+     *
      * @param fileName 文件名
      * @return 文件扩展名
      */
-    public static String getFileExtensionWithPrefixDot(@Nullable String fileName) {
+    public static String getFileExtensionWithPrefixDot(String fileName) {
         if (StrUtil.isBlank(fileName) || !fileName.contains(StrUtils.DOT)) {
             return StrUtils.EMPTY;
         }
@@ -100,4 +121,80 @@ public abstract class FileUtils {
         return result;
     }
 
+    /**
+     * 获取文件名（不包含后缀名）
+     *
+     * @param file 文件
+     * @return 文件名（不包含后缀名）
+     */
+    public static String getFilenameWithoutExtension(File file) {
+        return removeFileExtension(file.getName());
+    }
+
+    /**
+     * 去除文件名中的后缀名
+     *
+     * @param fileName 文件名
+     * @return 文件名去除后缀名（包括前面的 .）后的剩余部分
+     */
+    public static String removeFileExtension(String fileName) {
+        int pos = fileName.lastIndexOf(".");
+        return pos == -1 ? fileName : fileName.substring(0, pos);
+    }
+
+    /**
+     * 判断文件是否存在
+     *
+     * @param filePath 文件路径
+     * @return 文件是否存在
+     */
+    public static boolean fileExists(String filePath) {
+        return fileExists(new File(filePath));
+    }
+
+    /**
+     * 判断文件是否存在
+     *
+     * @param file 文件
+     * @return 文件是否存在
+     */
+    public static boolean fileExists(File file) {
+        return file.exists() && file.isFile();
+    }
+
+    /**
+     * 判断目录是否存在
+     *
+     * @param dirPath 目录路径
+     * @return 目录是否存在
+     */
+    public static boolean dirExists(String dirPath) {
+        return fileExists(new File(dirPath));
+    }
+
+    /**
+     * 判断目录是否存在
+     *
+     * @param dir 目录
+     * @return 目录是否存在
+     */
+    public static boolean dirExists(File dir) {
+        return dir.exists() && dir.isDirectory();
+    }
+
+    /**
+     * 判断文件是否拥有指定的文件名后缀(不区分大小写, 后缀名开头的点号有无均可）
+     *
+     * @param file 文件
+     * @param fileExtension 文件名后缀
+     * @return 文件是否拥有指定的文件名后缀
+     */
+    public static boolean hasExtension(File file, String fileExtension) {
+        Asserts.notBlank(fileExtension, "文件名后缀不能为空白");
+
+        String fileExtWithoutLeadingDot = StrUtil.removePrefix(fileExtension, StrUtils.DOT);
+
+        String resolvedFileExt = FileUtils.getFileExtension(file);
+        return resolvedFileExt.equalsIgnoreCase(fileExtWithoutLeadingDot);
+    }
 }

@@ -1,6 +1,7 @@
 package plus.hutool.core.lang;
 
 import cn.hutool.core.io.IORuntimeException;
+import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
 import plus.hutool.core.lang.exception.UnsupportedClientRequestException;
 
@@ -14,7 +15,7 @@ import java.time.format.DateTimeParseException;
  * @author bianyun
  * @date 2022/11/27
  */
-@SuppressWarnings({"JavadocDeclaration", "AlibabaAbstractClassShouldStartWithAbstractNaming"})
+@SuppressWarnings("JavadocDeclaration")
 public abstract class ExceptionUtils {
     private ExceptionUtils() {}
 
@@ -50,5 +51,20 @@ public abstract class ExceptionUtils {
     @SuppressWarnings("UnusedReturnValue")
     public static <T> T unreachableButCompilerNeedsThis() {
         throw new AssertionError("this code should never be reached");
+    }
+
+    public static <T extends RuntimeException> T newException(Class<T> clazz,
+                                                              Throwable cause,
+                                                              String msgTemplate,
+                                                              Object... args) {
+        String errorMsg = StrUtil.format(msgTemplate, args);
+        return ReflectUtil.newInstance(clazz, errorMsg, cause);
+    }
+
+    public static <T extends RuntimeException> T newException(Class<T> clazz,
+                                                              String msgTemplate,
+                                                              Object... args) {
+        String errorMsg = StrUtil.format(msgTemplate, args);
+        return ReflectUtil.newInstance(clazz, errorMsg);
     }
 }

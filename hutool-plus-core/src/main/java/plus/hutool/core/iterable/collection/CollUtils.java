@@ -6,6 +6,7 @@ import plus.hutool.core.lang.Asserts;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -17,7 +18,7 @@ import java.util.Set;
  * @author bianyun
  * @date 2022/11/27
  */
-@SuppressWarnings({"JavadocDeclaration", "AlibabaAbstractClassShouldStartWithAbstractNaming"})
+@SuppressWarnings("JavadocDeclaration")
 public abstract class CollUtils {
     private CollUtils() {}
 
@@ -43,7 +44,7 @@ public abstract class CollUtils {
     @SafeVarargs
     public static <T> List<T> unmodifiableList(T firstElem, T... remainingElems) {
         if (remainingElems.length == 0) {
-            return Collections.singletonList(firstElem);
+            return Collections.unmodifiableList(ArrayUtils.toList(firstElem));
         }
 
         Set<T> set = CollUtil.newLinkedHashSet(firstElem);
@@ -64,7 +65,7 @@ public abstract class CollUtils {
     public static <T> List<T> unmodifiableList(boolean removeDuplicates, T[] elemArray) {
         Asserts.isTrue(elemArray.length > 0, "元素数组长度必须大于 0");
         if (elemArray.length == 1) {
-            return Collections.singletonList(elemArray[0]);
+            return Collections.unmodifiableList(ArrayUtils.toList(elemArray[0]));
         }
 
         List<T> tempList = new ArrayList<>();
@@ -76,5 +77,47 @@ public abstract class CollUtils {
         }
 
         return Collections.unmodifiableList(tempList);
+    }
+
+    /**
+     * 构建元素不可变的集合
+     *
+     * @param firstElem      第一个元素
+     * @param remainingElems 剩余元素数组
+     * @param <T>            元素类型
+     * @return 元素不可变的列表
+     */
+    @SafeVarargs
+    public static <T> Set<T> unmodifiableSet(T firstElem, T... remainingElems) {
+        if (remainingElems.length == 0) {
+            return Collections.unmodifiableSet(ArrayUtils.toSet(firstElem));
+        }
+
+        Set<T> set = CollUtil.newHashSet(firstElem);
+        Collections.addAll(set, remainingElems);
+        return Collections.unmodifiableSet(set);
+    }
+
+    /**
+     * 将不同集合中的元素抽取后组成新的元素不可变的集合
+     *
+     * @param firstSet      第一个集合
+     * @param remainingSets 剩余元素集合
+     * @param <T>           元素类型
+     * @return 元素不可变的列表
+     */
+    @SafeVarargs
+    public static <T> Set<T> mergeToUnmodifiableSet(Collection<T> firstSet, Collection<T>... remainingSets) {
+        if (remainingSets.length == 0) {
+            return Collections.unmodifiableSet(new HashSet<>(firstSet));
+        }
+
+        Set<T> set = CollUtil.newHashSet(firstSet);
+
+        for (Collection<T> remainingSet : remainingSets) {
+            set.addAll(remainingSet);
+        }
+
+        return Collections.unmodifiableSet(set);
     }
 }

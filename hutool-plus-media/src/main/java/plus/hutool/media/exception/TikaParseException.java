@@ -8,11 +8,12 @@ import lombok.NoArgsConstructor;
  * @author bianyun
  * @date 2022/12/22
  */
+@SuppressWarnings("JavadocDeclaration")
 @NoArgsConstructor
-@SuppressWarnings({"JavadocDeclaration"})
 public class TikaParseException extends RuntimeException {
 
     public TikaParseException(String message, Throwable cause) {
         super(message, cause);
     }
+
 }
